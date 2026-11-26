@@ -201,16 +201,13 @@ const INDUSTRIES = Object.fromEntries(IND_ROWS.map(([k, group, label, phrase, wh
 
 /* ---------- Nakamoto Reports citation (the watermark) ---------- */
 const FIRST = ["Adaeze","Brennan","Camila","Darius","Elena","Farid","Greta","Hiroshi","Imani","Jonas","Keira","Luca","Maren","Nikhil","Oksana","Pavel","Quinn","Rosalind","Soren","Tamsin","Ulric","Valeria","Wendell","Ximena","Yusuf","Zora"];
-// Invented surnames plus classic economists (all deceased). For economists, the listed letter is
-// the real person's first initial, which is never used, so no report is pinned on the real economist.
+// Invented surnames plus one economist (Bastiat). His real first initial (F) is never used,
+// so no report is pinned on the real person.
 const LAST = [
   ["Abernathy"], ["Bellweather"], ["Castellanos"], ["Draycott"], ["Eriksen"], ["Fairbanks"], ["Galloway"], ["Halvorsen"],
   ["Ibarra"], ["Jessup"], ["Kowalczyk"], ["Lindqvist"], ["Marchetti"], ["Okafor"], ["Pemberton"], ["Quintero"],
   ["Strand"], ["Thackeray"], ["Underhill"], ["Valdivia"], ["Whitcombe"], ["Yarborough"], ["Zielinski"], ["Ashdown"],
-  ["Corriveau"], ["Delacroix"], ["Esterhuizen"],
-  ["Bastiat", "F"], ["Cantillon", "R"], ["Turgot", "A"], ["Menger", "C"], ["Say", "J"], ["Ricardo", "D"], ["Hume", "D"],
-  ["Jevons", "W"], ["Walras", "L"], ["Pareto", "V"], ["Marshall", "A"], ["Hayek", "F"], ["Mises", "L"], ["Schumpeter", "J"],
-  ["Knight", "F"], ["Coase", "R"], ["Hazlitt", "H"], ["Rothbard", "M"], ["Böhm-Bawerk", "E"]
+  ["Corriveau"], ["Delacroix"], ["Esterhuizen"], ["Bastiat", "F"]
 ];
 const T1 = ["The hidden cost of","Measuring the burden of","Quantifying","Mapping","The economics of","Pricing","Benchmarking","Closing the gap in","Rethinking","The time tax of"];
 const T2 = ["operational friction","unmet demand","customer time loss","service gaps","fragmented workflows","underserved buyers","manual processes","access barriers"];
@@ -285,7 +282,7 @@ const NUMERIC = [
   { id: "q8", sec: 7, kind: "money", prompt: () => `What is the matching <b>annual recurring revenue</b> (ARR)?`, hint: `MRR × 12.` },
   { id: "q9", sec: 8, kind: "money", prompt: S => `You project <b>${money(S.profit)}</b> in pre-tax profit in year three. As a C-corporation you pay the 21% federal rate plus an assumed <b>${num(S.stateTax)}%</b> state rate (add them together). What is the <b>corporate income tax</b>?`, hint: `Profit × (21% + state rate).` },
   { id: "q10", sec: 8, kind: "money", prompt: () => `The corporation pays all remaining after-tax profit to you as dividends, taxed at <b>15%</b>. What is the <b>total tax</b> under the C-corporation?`, hint: `Corporate tax + 15% × (profit − corporate tax).` },
-  { id: "q11", sec: 8, kind: "money", prompt: S => `As an LLC, profit passes through and is taxed once at your assumed personal rate of <b>${S.llcRate}%</b>. What is the <b>total tax</b> under the LLC?`, hint: `Profit × personal rate.` },
+  { id: "q11", sec: 8, kind: "money", prompt: S => `As an LLC with default pass-through taxation, profit is taxed once at your assumed personal rate of <b>${S.llcRate}%</b>. What is the <b>total tax</b> under the LLC?`, hint: `Profit × personal rate.` },
   { id: "q12", sec: 8, kind: "choice", options: ["LLC", "C-corporation"], prompt: () => `Which structure has the <b>lower total tax</b> in year three?`, hint: `Compare your LLC total with your C-corporation total.` }
 ];
 const ALL_IDS = NUMERIC.map(q => q.id);
@@ -672,12 +669,15 @@ const RENDER = {
   <div class="box example"><span class="tag">Example</span><p>Busy dog owners lose hours each week coordinating walkers (time), already pay walkers (money), and gather on neighborhood apps (reach). That problem can be monetized. "People wish the weather were nicer" fails all three.</p></div>
   ${Q.map(([k, t]) => `<label>${t}</label><div class="opts row">${["Yes", "Not sure", "No"].map(o => `<label><input type="radio" name="${k}" value="${o}"> ${o}</label>`).join("")}</div>`).join("")}
   <div id="m-explain"></div>
+  <div id="m-now">${textHTML("custnow", "What are potential customers doing right now to deal with this problem, and why isn't it good enough?")}</div>
   ${checkHTML("s3")}
   <div id="s3body"></div>`;
   ["m1", "m2", "m3"].forEach(k => el.querySelectorAll(`input[name=${k}]`).forEach(r => { r.checked = M[k] === r.value; r.onchange = () => { M[k] = r.value; draw(); save(); }; }));
+  wireTexts($("m-now"));
   const anyNo = () => ["m1", "m2", "m3"].some(k => M[k] === "No");
   const draw = () => {
     el.querySelectorAll("input[name=m1], input[name=m2], input[name=m3], input[name=s3]").forEach(r => r.disabled = !!state.s3done);
+    if (state.s3done) $("t-custnow").disabled = true;
     const ex = $("m-explain");
     if (anyNo() && !ex.querySelector("textarea")) { ex.innerHTML = textHTML("mfix", "You answered \"No\" above. What would have to change for it to become a \"Yes\"?"); wireTexts(ex); if (state.s3done) ex.querySelector("textarea").disabled = true; }
     if (!anyNo()) ex.innerHTML = "";
@@ -689,7 +689,7 @@ const RENDER = {
       $("s3back").onclick = () => { state.s2done = false; delete state.gates.s3; renderSection(2); rendered[2] = true; renderSection(3); refresh(); $("sec2").scrollIntoView({ behavior: "smooth" }); };
       return;
     }
-    const ready = ["m1", "m2", "m3"].every(k => M[k]) && (!anyNo() || words(state.written.mfix) >= MINWORDS) && g.ans === "yes";
+    const ready = ["m1", "m2", "m3"].every(k => M[k]) && (!anyNo() || words(state.written.mfix) >= MINWORDS) && words(state.written.custnow) >= MINWORDS && g.ans === "yes";
     b.innerHTML = ready ? `<p class="sub">Continuing locks your industry and builds your scenario.</p><button id="s3go">Build my scenario</button>` : "";
     if (ready) $("s3go").onclick = async () => {
       state.industry = state.venture.industry;
@@ -699,7 +699,7 @@ const RENDER = {
   };
   wireCheck("s3", () => draw());
   $("gate-s3").addEventListener("change", draw);
-  el.addEventListener("input", e => { if (e.target.dataset.text === "mfix") draw(); });
+  el.addEventListener("input", e => { if (e.target.dataset.text === "mfix" || e.target.dataset.text === "custnow") draw(); });
   draw();
 },
 4(el) {
@@ -716,6 +716,7 @@ const RENDER = {
     <tr><td>Typical price customers accept</td><td class="v">${money(S.price)}/month</td><td class="c">${pcite(S, "price")}</td></tr>
     <tr><td>Realistic first-year market capture</td><td class="v">${S.capture}%</td><td class="c">${pcite(S, "capture")}</td></tr>
   </table>
+  <p class="sub">These figures are planning assumptions for your venture. Getting the math right with them doesn't prove you can win these customers; you will test these assumptions against real evidence as the course goes on.</p>
   <p class="sub">Your company will be incorporated in <b>${esc(S.state)}</b>. You will research ${esc(S.state)}'s real requirements in Discussion Forum #1.</p>
   ${checkHTML("s4")}`;
   wireCheck("s4");
@@ -769,18 +770,19 @@ const RENDER = {
 8(el) {
   el.innerHTML = head(8, "compare legal structures and choose one (Chapter 13).") + `
   <div class="box lesson"><span class="tag">Learn</span>
-    <p>The legal form decides who is liable for debts, how profit is taxed, and who can invest.</p>
-    <ul><li><b>Sole proprietorship / partnership:</b> simple and cheap, but owners are personally liable.</li>
-    <li><b>LLC:</b> protects owners' personal assets; profit "passes through" and is taxed once on the owners' returns.</li>
-    <li><b>S-corporation:</b> pass-through taxation with limits on who and how many can own shares.</li>
-    <li><b>C-corporation:</b> pays corporate income tax, and owners pay tax again on dividends ("double taxation"). Preferred by most venture capital investors.</li></ul></div>
+    <p>Two separate choices shape a new business: its <b>legal form</b> (who is liable for debts, who can invest) and its <b>federal tax treatment</b> (how profit is taxed).</p>
+    <ul><li><b>Sole proprietorship / general partnership:</b> simple and cheap, but owners are personally liable.</li>
+    <li><b>LLC:</b> protects owners' personal assets. By default, profit "passes through" and is taxed once on the owners' returns, but an LLC can elect to be taxed as an S-corporation or a C-corporation.</li>
+    <li><b>Corporation:</b> taxed by default as a <b>C-corporation</b>, which pays corporate income tax; owners pay tax again on dividends ("double taxation"). Preferred by most venture capital investors.</li>
+    <li><b>S-corporation status</b> is not a separate type of company. It is a federal tax election that eligible corporations and LLCs can make to pass profit through to owners, with limits (for example, no more than 100 shareholders and one class of stock).</li></ul>
+    <p>The structure you choose this week is a <b>preliminary decision</b>. You can revisit it as the business develops.</p></div>
   <div class="box example"><span class="tag">Example</span><p>$100,000 profit. C-corporation at 21% + 5% state = <b>$26,000</b>; dividends taxed 15% × $74,000 = $11,100; total <b>$37,100</b>. LLC at a 30% personal rate = <b>$30,000</b>. The LLC pays less here.</p></div>
-  <p class="sub">The rates below are planning assumptions for practice, not the actual rates in ${esc(S.state)}.</p>
+  <p class="sub">The rates below are planning assumptions for practice, not the actual rates in ${esc(S.state)}. This comparison covers only an LLC with default pass-through taxation and a C-corporation; S-corporation taxation works differently, and real tax results depend on elections and each owner's situation. Tax is one factor in the decision, not the whole decision.</p>
   ${NUMERIC.filter(q => q.sec === 8 && q.kind !== "choice").map((q, i) => numericHTML(q, i === 0)).join("")}
   ${choiceHTML(NUMERIC.find(q => q.id === "q12"))}
   <label for="legalChoice">Which structure will you form in ${esc(S.state)}?</label>
-  <select id="legalChoice" style="max-width:320px"><option value="">Choose…</option>${["Sole proprietorship", "General partnership", "LLC", "S-corporation", "C-corporation"].map(o => `<option>${o}</option>`).join("")}</select>
-  ${textHTML("legal", "Why?", "Use your tax numbers above and at least one other factor: liability, investors, paperwork, or cost to form.")}
+  <select id="legalChoice" style="max-width:420px"><option value="">Choose…</option>${["Sole proprietorship", "General partnership", "LLC (default pass-through taxation)", "LLC electing S-corporation taxation", "Corporation electing S-corporation taxation", "C-corporation"].map(o => `<option>${o}</option>`).join("")}</select>
+  ${textHTML("legal", "Why?", "Use your tax numbers above and at least one other factor: liability, investors, paperwork, or cost to form. If you chose S-corporation taxation, say why, since the math above doesn't cover it.")}
   ${checkHTML("g8")}
   ${aiHTML(8)}`;
   $("legalChoice").value = state.legalChoice || "";
@@ -828,7 +830,8 @@ async function buildHandIn() {
     [B("Started"), t(state.started)], [B("Saved"), t(state.saved)], [B("Signed"), state.sig || "", t(state.sigAt)], [],
     [B("Venture"), state.venture.name || ""], [B("Industry"), S ? S.ind.label : ""], [B("Problem"), W(state.venture.problem || "")], [B("Who has it"), state.venture.who || ""],
     [B("Monetizable?"), `money/time: ${state.money.m1 || ""} · would pay: ${state.money.m2 || ""} · reachable: ${state.money.m3 || ""}`],
-    [B("What would need to change"), W(state.written.mfix || "")], []
+    [B("What would need to change"), W(state.written.mfix || "")],
+    [B("What customers do now"), W(state.written.custnow || "")], []
   ];
   if (S) rows.push([B("Nakamoto Reports citation"), W(S.cite.refText)], [B("State"), S.state], []);
   rows.push([B("Section"), B("Opened"), B("Completed"), B("Minutes"), B("Self-check")]);
