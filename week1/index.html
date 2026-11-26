@@ -112,7 +112,7 @@
 <section id="startView" class="card">
   <h2>Start your lab</h2>
   <div class="box yellow">
-    <p>Type your <b>full name exactly as it appears in Blackboard</b> and the <b>access code</b> your instructor sent you. Together they create your own scenario and numbers. Use the same name and code every week.</p>
+    <p>Type your <b>first name, then your last name, exactly as written in your instructor's message</b>, and the <b>access code</b> from that message. Together they create your own scenario and numbers. Use the same name and code every week.</p>
   </div>
   <label for="inName">Full name</label>
   <input type="text" id="inName" autocomplete="name">
@@ -147,6 +147,17 @@ const toHex = buf => [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2
 async function sha256Hex(s) { return toHex(await crypto.subtle.digest("SHA-256", enc.encode(s))); }
 const normName = s => String(s || "").normalize("NFKC").trim().replace(/\s+/g, " ").toLowerCase();
 const normCode = s => { const c = String(s || "").normalize("NFKC").toUpperCase().replace(/[^A-Z0-9]/g, ""); return c.length ? c : null; };
+// Access codes: 6 random characters + 2 check characters computed from the student's name.
+// Must match the report-number checker exactly.
+const CODE_CHARS = "BCDFGHJKMNPQRSTVWXZ23456789";
+async function codeCheckChars(name, body) {
+  const h = await sha256Hex(["CK", normName(name), body].join("|"));
+  return CODE_CHARS[parseInt(h.slice(0, 8), 16) % CODE_CHARS.length] + CODE_CHARS[parseInt(h.slice(8, 16), 16) % CODE_CHARS.length];
+}
+async function codeFits(name, code) {
+  const c = normCode(code);
+  return !!c && c.length === 8 && [...c].every(ch => CODE_CHARS.includes(ch)) && (await codeCheckChars(name, c.slice(0, 6))) === c.slice(6);
+}
 async function rnd(seed, field, n) { return parseInt((await sha256Hex(seed + ":" + field)).slice(0, 12), 16) % n; }
 async function pickR(seed, field, lo, hi, step) { const n = Math.round((hi - lo) / step) + 1; return Math.round((lo + step * await rnd(seed, field, n)) * 1000) / 1000; }
 // Fingerprint of name + access code + term. It is never shown as a code; it becomes the report number.
@@ -638,7 +649,7 @@ const RENDER = {
 2(el) {
   const v = state.venture;
   el.innerHTML = head(2, "set up your venture. No math yet.") + `
-  <div class="box lesson"><span class="tag">Start here</span><p>Every business starts with a problem someone has. Name your venture, choose its industry, and state the problem in one plain sentence. You can refine the wording later, but your industry is locked after Section 3, because it shapes your scenario for the rest of the course.</p></div>
+  <div class="box lesson"><span class="tag">Start here</span><p>Every business starts with a problem someone has. Name your venture, choose its industry, and state the problem in one plain sentence. These lock when you click <b>Continue</b>. If Section 3 shows the problem can't make money, you can come back and change them. Once you finish Section 3, your industry is locked for good, because it shapes your scenario for the rest of the course. You can still polish the wording of your problem in your papers.</p></div>
   <label for="v-name">Venture name</label><input type="text" id="v-name">
   <label for="v-ind">Industry</label><select id="v-ind"><option value="">Choose one…</option>${[...new Set(IND_ROWS.map(r => r[1]))].map(g => `<optgroup label="${esc(g)}">${IND_ROWS.filter(r => r[1] === g).map(r => `<option value="${r[0]}">${esc(r[2])}</option>`).join("")}</optgroup>`).join("")}</select>
   <label for="v-prob">The problem, in one sentence</label><input type="text" id="v-prob" placeholder="What is broken, missing, slow, or too expensive, and for whom?">
@@ -720,6 +731,7 @@ const RENDER = {
     <tr><td>Typical price customers accept</td><td class="v">${money(S.price)}/month</td><td class="c">${pcite(S, "price")}</td></tr>
     <tr><td>Realistic first-year market capture</td><td class="v">${S.capture}%</td><td class="c">${pcite(S, "capture")}</td></tr>
   </table>
+  <div class="box lesson"><span class="tag">About this source</span><p><b>Nakamoto Reports is a fictional research firm created for this course.</b> Its report exists only in this lab, so you won't find it online; that's expected. Cite it in APA 7 exactly as shown, as a course case source. Every other source you use must be real and must lead to the exact source you cite.</p></div>
   <p class="sub">These figures are planning assumptions for your venture. Getting the math right with them doesn't prove you can win these customers; you will test these assumptions against real evidence as the course goes on.</p>
   <p class="sub">Your company will be incorporated in <b>${esc(S.state)}</b>. You will research ${esc(S.state)}'s real requirements in Discussion Forum #1.</p>
   ${checkHTML("s4")}`;
@@ -884,8 +896,11 @@ async function doDownload() {
   a.download = `BUEN644-Week1-${String(state.name).replace(/[^A-Za-z0-9]+/g, "-")}.xlsx`;
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  const allDone = SECTIONS.every(s => s.done());
+  // Finished and signed: remove the work from this browser so the next person on a shared computer can't open it.
+  if (allDone) { try { localStorage.removeItem(STORE); } catch (e) {} }
   const m = $("saveMsg");
-  if (m) { m.className = "msg ok"; m.textContent = SECTIONS.every(s => s.done()) ? "Downloaded. Upload this Excel file to the Week 1 lab in Blackboard." : "Downloaded. This saves your progress; load it later to pick up where you left off."; }
+  if (m) { m.className = "msg ok"; m.textContent = allDone ? "Downloaded. Upload this Excel file to the Week 1 lab in Blackboard. Your work has been removed from this browser; to make changes, use Load my saved work with the file you just downloaded." : "Downloaded. This saves your progress; load it later to pick up where you left off."; }
 }
 
 /* ---------------- loading ---------------- */
@@ -902,15 +917,24 @@ async function loadFile(file) {
   let saved = null;
   try { saved = JSON.parse(localStorage.getItem(STORE) || "null"); } catch (e) {}
   if (saved && saved.term === CONFIG.TERM && saved.lab === CONFIG.LAB_ID && saved.name) {
-    $("startMsg").className = "msg ok";
-    $("startMsg").innerHTML = `Found work in this browser for <b>${esc(saved.name)}</b>. <button class="ghost" id="btnResume" style="margin-left:6px">Continue</button>`;
-    $("btnResume").onclick = () => startLab(saved);
+    $("startMsg").className = "msg";
+    $("startMsg").innerHTML = `<div class="box yellow" style="margin:0"><p>Found work in this browser for <b>${esc(saved.name)}</b>. To continue it, enter that student's access code.</p>
+      <div class="row"><input type="text" id="resumeCode" autocomplete="off" style="max-width:200px"><button class="ghost" id="btnResume">Continue</button></div>
+      <p class="msg bad" id="resumeErr" style="margin:6px 0 0"></p>
+      <p class="sub" style="margin:6px 0 0">Not you? Type your own name and code above and click <b>Start</b>.</p></div>`;
+    const resume = () => {
+      if (normCode($("resumeCode").value) === normCode(saved.code)) return startLab(saved);
+      $("resumeErr").textContent = "That code doesn't match the saved work.";
+    };
+    $("btnResume").onclick = resume;
+    $("resumeCode").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); resume(); } });
   }
   $("btnStart").onclick = async () => {
     const name = $("inName").value.trim().replace(/\s+/g, " "), code = $("inCode").value.trim(), m = $("startMsg");
     m.className = "msg bad";
     if (name.split(" ").length < 2) return m.textContent = "Enter your full name (first and last), exactly as it appears in Blackboard.";
     if (!normCode(code)) return m.textContent = "Enter the access code your instructor sent you.";
+    if (!(await codeFits(name, code))) return m.textContent = "Your name and access code don't match. Type your first and last name and your code exactly as written in your instructor's message. If they still don't match, email your instructor.";
     if (!confirm(`Start as "${name}" with code ${code}?\n\nYour name and code create your scenario. They must match exactly every week.`)) return;
     await startLab({ v: 3, lab: CONFIG.LAB_ID, term: CONFIG.TERM, name, code, started: Date.now(), saved: Date.now(),
       ack: {}, ackAt: {}, sig: "", venture: {}, money: {}, written: {}, gates: {}, ans: {}, sec: {} });
