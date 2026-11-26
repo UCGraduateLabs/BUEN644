@@ -149,7 +149,12 @@ const normName = s => String(s || "").normalize("NFKC").trim().replace(/\s+/g, "
 const normCode = s => { const c = String(s || "").normalize("NFKC").toUpperCase().replace(/[^A-Z0-9]/g, ""); return c.length ? c : null; };
 async function rnd(seed, field, n) { return parseInt((await sha256Hex(seed + ":" + field)).slice(0, 12), 16) % n; }
 async function pickR(seed, field, lo, hi, step) { const n = Math.round((hi - lo) / step) + 1; return Math.round((lo + step * await rnd(seed, field, n)) * 1000) / 1000; }
-async function studentCode(name, code) { return (await sha256Hex(["SC", CONFIG.TERM, normName(name), normCode(code)].join("|"))).slice(0, 8).toUpperCase(); }
+// Fingerprint of name + access code + term. It is never shown as a code; it becomes the report number.
+async function fingerprint(name, code) { return sha256Hex(["SC", CONFIG.TERM, normName(name), normCode(code)].join("|")); }
+async function reportNumber(name, code) {
+  const fp = await fingerprint(name, code);
+  return `NR-${1000 + parseInt(fp.slice(0, 8), 16) % 9000}-${10000 + parseInt(fp.slice(8, 16), 16) % 90000}`;
+}
 
 /* ---------- industries ----------
    [key, group, label, phrase used in report title, who has the problem,
@@ -215,7 +220,7 @@ const T3 = ["Benchmarks for","A market sizing study of","Evidence from","Demand 
 const T4 = ["U.S. markets","emerging segments","small and mid-sized buyers","regional markets","early-stage ventures"];
 const STATES = ["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"];
 
-async function buildCitation(seed, ind) {
+async function buildCitation(seed, ind, reportNo) {
   const nAuth = 1 + await rnd(seed, "nauth", 2);
   const authors = [];
   for (let i = 0; i < nAuth; i++) {
@@ -228,7 +233,6 @@ async function buildCitation(seed, ind) {
   }
   const year = 2023 + await rnd(seed, "year", 4);
   const title = `${T1[await rnd(seed, "t1", T1.length)]} ${T2[await rnd(seed, "t2", T2.length)]} in ${ind.phrase}: ${T3[await rnd(seed, "t3", T3.length)]} ${T4[await rnd(seed, "t4", T4.length)]}`;
-  const reportNo = "NR-" + (1000 + await rnd(seed, "rno", 9000));
   const names = authors.map(a => `${a.last}, ${a.init}`);
   const authorRef = names.length === 1 ? names[0] : `${names[0]}, & ${names[1]}`;
   const inText = authors.length === 1 ? authors[0].last : `${authors[0].last} & ${authors[1].last}`;
@@ -245,7 +249,7 @@ async function buildScenario(name, code, industryKey) {
   const wk = await sha256Hex(["W1", CONFIG.TERM, nn, cc, industryKey].join("|"));        // this week
   const S = { industry: industryKey, ind };
   S.state    = STATES[await rnd(company, "state", 50)];
-  S.cite     = await buildCitation(company + industryKey, ind);
+  S.cite     = await buildCitation(company + industryKey, ind, await reportNumber(name, code));
   S.affected = await pickR(wk, "aff", ...ind.aff);
   S.hours    = await pickR(wk, "hrs", ...ind.hrs);
   S.rate     = await pickR(wk, "rate", ...ind.rate);
@@ -484,14 +488,14 @@ const unlocked = n => n === 1 || SECTIONS[n - 2].done();
 const rendered = {};
 async function startLab(st) {
   state = st;
-  state.sc = await studentCode(state.name, state.code);
+  delete state.sc;
   S = state.industry ? await buildScenario(state.name, state.code, state.industry) : null;
   Object.keys(rendered).forEach(k => delete rendered[k]);
   save();
   $("startView").classList.add("hidden");
   $("labView").classList.remove("hidden");
   $("progressBar").classList.remove("hidden");
-  $("whoami").textContent = `${state.name} · student code ${state.sc}`;
+  $("whoami").textContent = state.name;
   $("sections").innerHTML = SECTIONS.map(s => `<section class="card" id="sec${s.n}"><div class="lockmsg">🔒 Section ${s.n}: ${esc(s.title)}. Finish Section ${s.n - 1} to open it.</div></section>`).join("");
   refresh();
 }
@@ -795,7 +799,6 @@ const RENDER = {
   ${ackHTML(FIN_ACKS)}
   <label for="inSig">Type your full name to sign</label>
   <input type="text" id="inSig" style="max-width:360px"><div class="msg" id="sigMsg"></div>
-  <div class="box yellow" style="margin-top:16px"><p>Your student code is <b class="mono">${state.sc}</b>. Put it under your name on the title page of your Week 2 paper.</p></div>
   <p>When you have signed, download your work as an <b>Excel file</b> and upload it to the Week 1 lab assignment in Blackboard. Do not edit or re-save the file.</p>
   <div class="row"><button id="btnFinal">Download my work (Excel)</button></div>
   <div class="msg" id="saveMsg"></div>
@@ -813,7 +816,7 @@ function drawSummary() {
   const t = $("sumTable"); if (!t) return;
   const wrong = ALL_IDS.reduce((s, id) => s + ((state.ans[id] || {}).wrong || []).length, 0);
   t.innerHTML = `<tr><th>Section</th><th>Status</th></tr>` + SECTIONS.map(s => `<tr><td>${s.n}. ${esc(s.title)}</td><td>${s.done() ? "✓ Complete" : "Not finished"}</td></tr>`).join("") +
-    `<tr><td><b>Total</b></td><td><b>${ALL_IDS.filter(correct).length} of ${ALL_IDS.length} math answers right · ${wrong} wrong tries · student code ${state.sc}</b></td></tr>`;
+    `<tr><td><b>Total</b></td><td><b>${ALL_IDS.filter(correct).length} of ${ALL_IDS.length} math answers right · ${wrong} wrong tries</b></td></tr>`;
 }
 
 /* ---------------- Excel file: progress save and hand-in ---------------- */
@@ -826,7 +829,7 @@ async function buildHandIn() {
   const done = SECTIONS.every(s => s.done());
   const rows = [
     [B(state.name)], [B("BUEN 644 · Week 1 Lab: Find a Problem")], [B(done ? "Status: complete and signed" : "Status: in progress (not yet signed)")], [],
-    [B("Name"), state.name], [B("Access code"), state.code], [B("Student code"), state.sc], [B("Term"), state.term],
+    [B("Name"), state.name], [B("Access code"), state.code], [B("Term"), state.term],
     [B("Started"), t(state.started)], [B("Saved"), t(state.saved)], [B("Signed"), state.sig || "", t(state.sigAt)], [],
     [B("Venture"), state.venture.name || ""], [B("Industry"), S ? S.ind.label : ""], [B("Problem"), W(state.venture.problem || "")], [B("Who has it"), state.venture.who || ""],
     [B("Monetizable?"), `money/time: ${state.money.m1 || ""} · would pay: ${state.money.m2 || ""} · reachable: ${state.money.m3 || ""}`],
