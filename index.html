@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BUEN 644 · New Venture Development Labs</title>
+<style>
+  :root {
+    --ink: #1c2430;
+    --muted: #5b6676;
+    --line: #dde3ea;
+    --bg: #f6f8fa;
+    --card: #ffffff;
+    --accent: #1f5fa8;
+    --soon: #9aa4b1;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.55;
+  }
+  header {
+    background: var(--ink);
+    color: #fff;
+    padding: 48px 24px 40px;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  header .code {
+    font-size: 0.85rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+  header h1 { margin: 6px 0 10px; font-size: 2rem; line-height: 1.2; }
+  header p { margin: 0; opacity: 0.85; max-width: 600px; }
+  main { padding: 32px 24px 64px; }
+  h2 { font-size: 1.1rem; margin: 0 0 14px; }
+  .note {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--accent);
+    border-radius: 6px;
+    padding: 16px 18px;
+    margin-bottom: 32px;
+    font-size: 0.95rem;
+  }
+  .note p { margin: 0 0 8px; }
+  .note p:last-child { margin-bottom: 0; }
+  ol.labs { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+  .lab {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 14px 18px;
+    text-decoration: none;
+    color: inherit;
+  }
+  a.lab:hover { border-color: var(--accent); }
+  .wk {
+    flex: 0 0 64px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .title { flex: 1; font-weight: 600; }
+  .status { font-size: 0.85rem; color: var(--accent); font-weight: 600; white-space: nowrap; }
+  .lab.soon { color: var(--soon); }
+  .lab.soon .wk, .lab.soon .status { color: var(--soon); }
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 20px 24px;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  @media (max-width: 520px) {
+    header h1 { font-size: 1.6rem; }
+    .lab { flex-wrap: wrap; gap: 4px 12px; }
+    .wk { flex-basis: auto; }
+    .title { flex-basis: 100%; order: 3; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="code">BUEN 644</div>
+    <h1>New Venture Development Labs</h1>
+    <p>Each weekly lab walks you through one part of your business plan. Your numbers and scenario are unique to you, and every lab builds toward the final Business Plan.</p>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="note">
+      <p><strong>Before you start:</strong> enter your information exactly the same way every week. Your lab results depend on it.</p>
+      <p>Your lab details are private. Do not post them in discussions or share them with classmates.</p>
+      <p>Labs run entirely in your browser. Nothing you type is sent or stored online, so download your work before closing the tab.</p>
+    </div>
+
+    <h2>Weekly Labs</h2>
+    <ol class="labs">
+      <li><a class="lab" href="week1/"><span class="wk">Week 1</span><span class="title">Find a Problem</span><span class="status">Open →</span></a></li>
+      <li><div class="lab soon"><span class="wk">Week 2</span><span class="title">Develop and Build Product or Service</span><span class="status">Coming soon</span></div></li>
+      <li><div class="lab soon"><span class="wk">Week 3</span><span class="title">Develop and Test the Business Model</span><span class="status">Coming soon</span></div></li>
+      <li><div class="lab soon"><span class="wk">Week 4</span><span class="title">Finding Partners</span><span class="status">Coming soon</span></div></li>
+      <li><div class="lab soon"><span class="wk">Week 5</span><span class="title">Operational Plan</span><span class="status">Coming soon</span></div></li>
+      <li><div class="lab soon"><span class="wk">Week 6</span><span class="title">Develop a Marketing Plan</span><span class="status">Coming soon</span></div></li>
+      <li><div class="lab soon"><span class="wk">Week 7</span><span class="title">Funding &amp; Growth</span><span class="status">Coming soon</span></div></li>
+    </ol>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">BUEN 644 · New Venture Development</div>
+</footer>
+</body>
+</html>
