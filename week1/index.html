@@ -8,276 +8,262 @@
   :root {
     --ink: #1c2430; --muted: #5b6676; --line: #dde3ea; --bg: #f6f8fa; --card: #fff;
     --accent: #1f5fa8; --ok: #1d7a46; --okbg: #e8f5ee; --bad: #b42318; --badbg: #fdecea;
-    --priv: #7a4b00; --privbg: #fff4e0; --pub: #1f5fa8; --pubbg: #e8f0fa;
+    --lesson: #e8f0fa; --lessonb: #1f5fa8; --ex: #fff4e0; --exb: #d08a00; --warn: #fdecea; --warnb: #b42318;
+    --yellow: #fff8d6; --yellowb: #c9a400;
   }
   * { box-sizing: border-box; }
   body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; color: var(--ink); background: var(--bg); line-height: 1.55; }
-  header { background: var(--ink); color: #fff; padding: 32px 20px 28px; }
-  .wrap { max-width: 820px; margin: 0 auto; }
-  header .code { font-size: .8rem; letter-spacing: .12em; text-transform: uppercase; opacity: .7; }
+  header { background: var(--ink); color: #fff; padding: 30px 20px 26px; }
+  .wrap { max-width: 840px; margin: 0 auto; }
+  header .code { font-size: .8rem; letter-spacing: .12em; text-transform: uppercase; opacity: .7; margin-top: 10px; }
   header h1 { margin: 4px 0 6px; font-size: 1.8rem; line-height: 1.2; }
   header p { margin: 0; opacity: .85; }
   header a { color: #fff; opacity: .75; font-size: .9rem; text-decoration: none; }
   main { padding: 24px 20px 80px; }
-  .card { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 20px 22px; margin-bottom: 18px; }
-  .card h2 { margin: 0 0 6px; font-size: 1.2rem; }
-  .card h3 { margin: 18px 0 6px; font-size: 1rem; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 22px 24px; margin-bottom: 18px; }
+  .card h2 { margin: 0 0 4px; font-size: 1.25rem; }
+  .card h3 { margin: 20px 0 6px; font-size: 1.02rem; }
+  .goal { font-weight: 600; margin: 0 0 12px; }
   .sub { color: var(--muted); font-size: .92rem; margin: 0 0 12px; }
-  label { display: block; font-weight: 600; font-size: .92rem; margin: 12px 0 4px; }
-  input[type=text], input[type=password], textarea {
-    width: 100%; padding: 9px 11px; border: 1px solid #c5ced8; border-radius: 6px; font: inherit; background: #fff;
-  }
-  textarea { min-height: 110px; resize: vertical; }
-  input:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 0; border-color: var(--accent); }
+  .secnum { display: inline-block; font-size: .75rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  label { display: block; font-weight: 600; font-size: .93rem; margin: 14px 0 4px; }
+  input[type=text], select, textarea { width: 100%; padding: 9px 11px; border: 1px solid #c5ced8; border-radius: 6px; font: inherit; background: #fff; }
+  textarea { min-height: 120px; resize: vertical; }
+  input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 0; border-color: var(--accent); }
+  input:disabled, select:disabled, textarea:disabled { background: #f0f3f6; color: #444; }
   button { font: inherit; font-weight: 600; padding: 9px 16px; border-radius: 6px; border: 1px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer; }
   button.ghost { background: #fff; color: var(--accent); }
-  button:disabled { opacity: .5; cursor: default; }
+  button:disabled { opacity: .45; cursor: default; }
   .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-  .msg { margin-top: 10px; font-size: .92rem; }
+  .msg { margin-top: 10px; font-size: .93rem; }
   .msg.bad { color: var(--bad); } .msg.ok { color: var(--ok); }
-  .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin: 10px 0 4px; }
-  .fact { border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; background: #fbfcfd; }
-  .fact .k { font-size: .78rem; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
-  .fact .v { font-weight: 700; font-size: 1.05rem; }
-  .badge { display: inline-block; font-size: .7rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; padding: 2px 7px; border-radius: 4px; vertical-align: middle; margin-left: 6px; }
-  .badge.priv { background: var(--privbg); color: var(--priv); }
-  .badge.pub { background: var(--pubbg); color: var(--pub); }
-  .q { border-top: 1px solid var(--line); padding: 14px 0 4px; }
-  .q:first-of-type { border-top: 0; }
+  .box { border-left: 4px solid; border-radius: 6px; padding: 12px 16px; margin: 14px 0; font-size: .95rem; }
+  .box p { margin: 0 0 8px; } .box p:last-child { margin-bottom: 0; }
+  .box ul, .box ol { margin: 6px 0 6px 18px; padding: 0; }
+  .box .tag { display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 4px; }
+  .lesson { background: var(--lesson); border-color: var(--lessonb); }
+  .lesson .tag { color: var(--lessonb); }
+  .example { background: var(--ex); border-color: var(--exb); }
+  .example .tag { color: #8a5a00; }
+  .warn { background: var(--warn); border-color: var(--warnb); }
+  .warn .tag { color: var(--warnb); }
+  .yellow { background: var(--yellow); border-color: var(--yellowb); }
+  .cite { font-family: Georgia, "Times New Roman", serif; background: #fbfcfd; border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px 12px 40px; text-indent: -26px; margin: 10px 0; }
+  .facts { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: .94rem; }
+  .facts td { padding: 8px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .facts td.v { font-weight: 700; white-space: nowrap; }
+  .facts td.c { color: var(--muted); font-size: .86rem; }
+  .q { border-top: 1px solid var(--line); padding: 14px 0 6px; }
+  .q.first { border-top: 0; }
   .q .prompt { margin: 0 0 8px; }
   .q .ans { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
   .q .ans input { max-width: 220px; }
   .q .status { font-size: .88rem; font-weight: 600; }
   .q.correct .status { color: var(--ok); }
-  .q.correct input { background: var(--okbg); border-color: var(--ok); }
+  .q.correct input[type=text] { background: var(--okbg); border-color: var(--ok); }
   .q .hint { display: none; margin-top: 8px; font-size: .9rem; background: var(--badbg); color: #6b1a12; padding: 8px 10px; border-radius: 6px; }
   .q.wrong .hint { display: block; }
   .q .tries { font-size: .8rem; color: var(--muted); }
   .opts label { font-weight: 400; display: flex; gap: 8px; align-items: flex-start; margin: 6px 0; cursor: pointer; }
   .opts input { margin-top: 5px; }
-  .note { background: var(--privbg); border-left: 4px solid #d08a00; padding: 12px 14px; border-radius: 6px; font-size: .92rem; margin: 12px 0; }
-  .note.blue { background: var(--pubbg); border-left-color: var(--accent); }
+  .ack label { font-weight: 400; display: flex; gap: 10px; align-items: flex-start; margin: 10px 0; cursor: pointer; }
+  .ack input { margin-top: 5px; flex: 0 0 auto; }
+  .count { font-size: .8rem; color: var(--muted); text-align: right; }
+  .locked { position: relative; }
+  .locked > *:not(.lockmsg) { display: none !important; }
+  .lockmsg { display: none; color: var(--muted); font-weight: 600; }
+  .locked .lockmsg { display: block; }
+  .done-badge { display: none; font-size: .8rem; font-weight: 700; color: var(--ok); margin-left: 8px; }
+  .complete .done-badge { display: inline; }
+  .gate { background: #fbfcfd; border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; margin-top: 18px; }
+  .src { border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; margin: 10px 0; background: #fff; }
   .progress { position: sticky; top: 0; z-index: 5; background: var(--ink); color: #fff; font-size: .88rem; padding: 8px 20px; }
   .progress .wrap { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
   .hidden { display: none !important; }
+  .policy { font-size: .9rem; background: #fbfcfd; border: 1px solid var(--line); border-radius: 6px; padding: 12px 16px; margin: 10px 0; }
+  .policy ol { margin: 6px 0 6px 20px; padding: 0; }
+  .summary td, .summary th { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); font-size: .9rem; }
+  .summary { border-collapse: collapse; width: 100%; margin: 10px 0; }
+  .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
   @media print { .progress, button, .noprint { display: none !important; } }
 </style>
 </head>
 <body>
-
 <header>
   <div class="wrap">
     <a href="../">← All labs</a>
-    <div class="code" style="margin-top:10px">BUEN 644 · Week 1 Lab</div>
+    <div class="code">BUEN 644 · Week 1 Lab</div>
     <h1>Find a Problem</h1>
-    <p>Size the problem, set a SMART target, and choose a legal structure using your own scenario.</p>
+    <p>Name your venture, define the problem, and test whether it is worth solving.</p>
   </div>
 </header>
 
-<div class="progress hidden" id="progressBar">
-  <div class="wrap">
-    <span id="whoami"></span>
-    <span id="progressText"></span>
-  </div>
-</div>
+<div class="progress hidden" id="progressBar"><div class="wrap"><span id="whoami"></span><span id="progressText"></span></div></div>
 
-<main>
-<div class="wrap">
+<main><div class="wrap">
 
-<section id="startView" class="hidden">
-  <div class="card">
-    <h2>Start your lab</h2>
-    <p class="sub">Your name and access code create your own scenario. Use the access code your instructor sent you, and type your name exactly as it appears in the course roster. Use the same name and code every week.</p>
-    <label for="inName">Full name</label>
-    <input type="text" id="inName" autocomplete="name">
-    <label for="inCode">Access code</label>
-    <input type="text" id="inCode" autocomplete="off" style="max-width:260px">
-    <label for="inIdea">Your business idea in one sentence</label>
-    <input type="text" id="inIdea" placeholder="e.g., A scheduling app that cuts no-shows for independent dental offices">
-    <div class="row" style="margin-top:16px">
-      <button id="btnStart">Start</button>
-      <span class="sub" style="margin:0">or</span>
-      <button class="ghost" id="btnLoadStart">Load my saved work</button>
-    </div>
-    <div class="msg" id="startMsg"></div>
+<!-- START -->
+<section id="startView" class="card">
+  <h2>Start your lab</h2>
+  <div class="box yellow">
+    <p>Type your <b>full name exactly as it appears in Blackboard</b> and the <b>access code</b> your instructor sent you. Together they create your own scenario and numbers. Use the same name and code every week.</p>
   </div>
-  <div class="note blue">This lab runs entirely in your browser. Nothing you type is sent anywhere. Your work is kept in this browser as you go, but always download your work before you leave.</div>
+  <label for="inName">Full name</label>
+  <input type="text" id="inName" autocomplete="name">
+  <label for="inCode">Access code</label>
+  <input type="text" id="inCode" autocomplete="off" style="max-width:260px">
+  <div class="row" style="margin-top:16px">
+    <button id="btnStart">Start</button>
+    <span class="sub" style="margin:0">or</span>
+    <button class="ghost" id="btnLoadStart">Load my saved work</button>
+  </div>
+  <div class="msg" id="startMsg"></div>
+  <p class="sub" style="margin-top:16px">This lab runs in your browser. Your work is kept in this browser as you go, but always download your work before you leave. Sections open one at a time as you finish each one.</p>
 </section>
 
-<section id="labView" class="hidden">
-  <div class="card">
-    <h2>Your scenario</h2>
-    <p class="sub">These are the planning assumptions for your venture. They are unique to you. In your paper, test them against real research and cite real sources for any market facts.</p>
-    <div class="note"><strong>Private details are yours alone.</strong> Do not post them in discussions or share them with classmates. Items marked <span class="badge pub">Public</span> may be discussed in DAR posts.</div>
-    <p><strong>Business idea:</strong> <span id="ideaOut"></span></p>
-    <div class="facts" id="factsOut"></div>
-  </div>
-
-  <div class="card" id="secA"></div>
-  <div class="card" id="secB"></div>
-  <div class="card" id="secC"></div>
-
-  <div class="card">
-    <h2>Part D · Build the foundation</h2>
-    <p class="sub">Draft the core elements of your business. These are not auto-graded; your instructor reads them. Write in full sentences. They become the starting point for your paper.</p>
-    <div id="writtenOut"></div>
-  </div>
-
-  <div class="card" id="secE"></div>
-
-  <div class="card noprint">
-    <h2>Save and hand in</h2>
-    <p class="sub">Download your work to save it or to hand it in. Upload the downloaded <strong>.csv</strong> file to the Week 1 lab assignment in the course portal. Do not edit the file.</p>
-    <div class="row">
-      <button id="btnDownload">Download my work</button>
-      <button class="ghost" id="btnLoad">Load my saved work</button>
-      <button class="ghost" id="btnPrint">Print / save as PDF</button>
-      <button class="ghost" id="btnReset">Clear this browser</button>
-    </div>
-    <div class="msg" id="saveMsg"></div>
-  </div>
-</section>
-
-<input type="file" id="fileLoad" accept=".csv,text/csv" class="hidden">
+<div id="labView" class="hidden">
+  <div id="sections"></div>
 </div>
-</main>
 
-<script>
+<input type="file" id="fileLoad" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" class="hidden">
+</div></main>
+<script id="core">
 const CONFIG = {
-  TERM: "2026FA-B2",        // change every term; old scenarios stop matching
-  FILE_SALT: "buen644-w1-file-v1"
+  TERM: "2026FA-B2",              // change every term
+  FILE_SALT: "buen644-w1-file-v2",
+  PUBLISHER: "Nakamoto Reports"
 };
 
+/* ---------- hashing ---------- */
+const enc = new TextEncoder();
+const toHex = buf => [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join("");
+async function sha256Hex(s) { return toHex(await crypto.subtle.digest("SHA-256", enc.encode(s))); }
+const normName = s => String(s || "").normalize("NFKC").trim().replace(/\s+/g, " ").toLowerCase();
+const normCode = s => { const c = String(s || "").normalize("NFKC").toUpperCase().replace(/[^A-Z0-9]/g, ""); return c.length ? c : null; };
+async function rnd(seed, field, n) { return parseInt((await sha256Hex(seed + ":" + field)).slice(0, 12), 16) % n; }
+async function pickR(seed, field, lo, hi, step) { const n = Math.round((hi - lo) / step) + 1; return Math.round((lo + step * await rnd(seed, field, n)) * 1000) / 1000; }
+async function shuffle(seed, field, n) {
+  const idx = [...Array(n).keys()];
+  for (let i = n - 1; i > 0; i--) { const j = await rnd(seed, field + i, i + 1); [idx[i], idx[j]] = [idx[j], idx[i]]; }
+  return idx;
+}
+async function studentCode(name, code) { return (await sha256Hex(["SC", CONFIG.TERM, normName(name), normCode(code)].join("|"))).slice(0, 8).toUpperCase(); }
+
+/* ---------- industries: ranges keep each scenario realistic ---------- */
+const INDUSTRIES = {
+  pet:    { label: "Pet services",                         phrase: "pet services",            who: "pet owners",                  aff: [15000, 90000, 500], hrs: [1, 5, 0.5],   rate: [22, 45, 1],  price: [15, 60, 1] },
+  health: { label: "Healthcare services",                  phrase: "healthcare services",     who: "independent clinics",         aff: [1500, 9000, 100],   hrs: [4, 15, 0.5],  rate: [35, 90, 1],  price: [99, 399, 5] },
+  food:   { label: "Food and beverage",                    phrase: "food and beverage",       who: "independent restaurants",     aff: [2000, 12000, 100],  hrs: [3, 12, 0.5],  rate: [18, 40, 1],  price: [49, 249, 5] },
+  saas:   { label: "Software / SaaS for small business",   phrase: "small-business software", who: "small businesses",            aff: [3000, 20000, 100],  hrs: [3, 12, 0.5],  rate: [40, 110, 1], price: [49, 299, 5] },
+  retail: { label: "Retail",                               phrase: "independent retail",      who: "independent retailers",       aff: [2000, 15000, 100],  hrs: [3, 10, 0.5],  rate: [20, 45, 1],  price: [39, 199, 5] },
+  trades: { label: "Construction and trades",              phrase: "construction and trades", who: "contractors",                 aff: [1500, 10000, 100],  hrs: [4, 12, 0.5],  rate: [35, 85, 1],  price: [79, 299, 5] },
+  edu:    { label: "Education and training",               phrase: "education and training",  who: "families and adult learners", aff: [20000, 120000, 500], hrs: [1, 6, 0.5],  rate: [18, 40, 1],  price: [15, 79, 1] },
+  fin:    { label: "Personal financial services",          phrase: "personal finance",        who: "households",                  aff: [20000, 150000, 500], hrs: [1, 4, 0.5],  rate: [25, 60, 1],  price: [9, 49, 1] },
+  other:  { label: "Other",                                phrase: "emerging service",        who: "potential customers",         aff: [5000, 60000, 500],  hrs: [1.5, 9.5, 0.5], rate: [25, 75, 1], price: [19, 149, 1] }
+};
+
+/* ---------- Nakamoto Reports citation (the watermark) ---------- */
+const FIRST = ["Adaeze","Brennan","Camila","Darius","Elena","Farid","Greta","Hiroshi","Imani","Jonas","Keira","Luca","Maren","Nikhil","Oksana","Pavel","Quinn","Rosalind","Soren","Tamsin","Ulric","Valeria","Wendell","Ximena","Yusuf","Zora"];
+const LAST = ["Abernathy","Bellweather","Castellanos","Draycott","Eriksen","Fairbanks","Galloway","Halvorsen","Ibarra","Jessup","Kowalczyk","Lindqvist","Marchetti","Nakagawa","Okafor","Pemberton","Quintero","Rasmussen","Strand","Thackeray","Underhill","Valdivia","Whitcombe","Yarborough","Zielinski","Ashdown","Brightwater","Corriveau","Delacroix","Esterhuizen"];
+const T1 = ["The hidden cost of","Measuring the burden of","Quantifying","Mapping","The economics of","Pricing","Benchmarking","Closing the gap in","Rethinking","The time tax of"];
+const T2 = ["operational friction","unmet demand","customer time loss","service gaps","fragmented workflows","underserved buyers","manual processes","access barriers"];
+const T3 = ["Benchmarks for","A market sizing study of","Evidence from","Demand signals in","Adoption patterns in","A survey of"];
+const T4 = ["U.S. markets","emerging segments","small and mid-sized buyers","regional markets","early-stage ventures"];
 const STATES = ["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"];
 
-const enc = new TextEncoder();
-function toHex(buf) { return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join(""); }
-async function sha256Hex(s) { return toHex(await crypto.subtle.digest("SHA-256", enc.encode(s))); }
-function normName(s) { return String(s || "").normalize("NFKC").trim().replace(/\s+/g, " ").toLowerCase(); }
-function normCode(s) {
-  const c = String(s || "").normalize("NFKC").toUpperCase().replace(/[^A-Z0-9]/g, "");
-  return c.length ? c : null;
-}
-async function rnd(seed, field, n) {
-  const h = await sha256Hex(seed + ":" + field);
-  return parseInt(h.slice(0, 12), 16) % n;
+async function buildCitation(seed, ind) {
+  const nAuth = 1 + await rnd(seed, "nauth", 2);
+  const authors = [];
+  for (let i = 0; i < nAuth; i++) {
+    const f = FIRST[await rnd(seed, "f" + i, FIRST.length)], l = LAST[await rnd(seed, "l" + i, LAST.length)];
+    const m = String.fromCharCode(65 + await rnd(seed, "m" + i, 26));
+    if (authors.some(a => a.last === l)) continue;
+    authors.push({ last: l, init: `${f[0]}. ${m}.` });
+  }
+  const year = 2023 + await rnd(seed, "year", 4);
+  const title = `${T1[await rnd(seed, "t1", T1.length)]} ${T2[await rnd(seed, "t2", T2.length)]} in ${ind.phrase}: ${T3[await rnd(seed, "t3", T3.length)]} ${T4[await rnd(seed, "t4", T4.length)]}`;
+  const reportNo = "NR-" + (1000 + await rnd(seed, "rno", 9000));
+  const names = authors.map(a => `${a.last}, ${a.init}`);
+  const authorRef = names.length === 1 ? names[0] : `${names[0]}, & ${names[1]}`;
+  const inText = authors.length === 1 ? authors[0].last : `${authors[0].last} & ${authors[1].last}`;
+  const narrative = authors.length === 1 ? authors[0].last : `${authors[0].last} and ${authors[1].last}`;
+  const titleSC = title.charAt(0).toUpperCase() + title.slice(1);
+  return { authors, year, title: titleSC, reportNo, authorRef, inText, narrative,
+    refText: `${authorRef} (${year}). ${titleSC} (Report No. ${reportNo}). ${CONFIG.PUBLISHER}.`,
+    refHTML: `${authorRef} (${year}). <i>${titleSC}</i> (Report No. ${reportNo}). ${CONFIG.PUBLISHER}.` };
 }
 
-/* ---------- scenario: SHA-256 of term + name + access code ---------- */
-async function buildScenario(name, code) {
-  const nn = normName(name), cc = normCode(code);
-  const company = await sha256Hex(["CO", CONFIG.TERM, nn, cc].join("|"));  // fixed all term
-  const wk = await sha256Hex(["W1", CONFIG.TERM, nn, cc].join("|"));       // this week only
-  const S = {};
+/* ---------- scenario ---------- */
+async function buildScenario(name, code, industryKey) {
+  const nn = normName(name), cc = normCode(code), ind = INDUSTRIES[industryKey] || INDUSTRIES.other;
+  const company = await sha256Hex(["CO", CONFIG.TERM, nn, cc].join("|"));                // fixed all term
+  const wk = await sha256Hex(["W1", CONFIG.TERM, nn, cc, industryKey].join("|"));        // this week
+  const S = { industry: industryKey, ind };
   S.state    = STATES[await rnd(company, "state", 50)];
-  S.affected = (120 + await rnd(wk, "affected", 831)) * 100;   // 12,000 – 95,100
-  S.hours    = (3 + await rnd(wk, "hours", 17)) / 2;           // 1.5 – 9.5
-  S.rate     = 28 + await rnd(wk, "rate", 67);                 // $28 – $94
-  S.save     = 5 * (6 + await rnd(wk, "save", 9));             // 30% – 70%
-  S.price    = 29 + await rnd(wk, "price", 121);               // $29 – $149 / month
-  S.capture  = 1 + await rnd(wk, "capture", 5);                // 1% – 5%
-  S.profit   = 5000 * (16 + await rnd(wk, "profit", 81));      // $80k – $480k
-  S.stateTax = (await rnd(wk, "statetax", 19)) / 2;            // 0% – 9%
-  S.llcRate  = 24 + await rnd(wk, "llc", 18);                  // 24% – 41%
-  S.optOrder = {};
-  for (const q of APA) {
-    const idx = q.options.map((_, i) => i);
-    for (let i = idx.length - 1; i > 0; i--) {
-      const j = await rnd(wk, q.id + "-shuffle-" + i, i + 1);
-      [idx[i], idx[j]] = [idx[j], idx[i]];
-    }
-    S.optOrder[q.id] = idx;
+  S.cite     = await buildCitation(company + industryKey, ind);
+  S.affected = await pickR(wk, "aff", ...ind.aff);
+  S.hours    = await pickR(wk, "hrs", ...ind.hrs);
+  S.rate     = await pickR(wk, "rate", ...ind.rate);
+  S.save     = await pickR(wk, "save", 30, 70, 5);
+  S.price    = await pickR(wk, "price", ...ind.price);
+  S.capture  = await pickR(wk, "capture", 1, 5, 1);
+  S.profit   = await pickR(wk, "profit", 80000, 480000, 5000);
+  S.stateTax = await pickR(wk, "stax", 0, 9, 0.5);
+  S.llcRate  = await pickR(wk, "llc", 24, 41, 1);
+  const pg = new Set(); S.pages = {};
+  for (const k of ["affected", "hours", "rate", "save", "price", "capture"]) {
+    let p; let i = 0; do { p = 3 + await rnd(wk, "pg" + k + i, 58); i++; } while (pg.has(p)); pg.add(p); S.pages[k] = p;
   }
-  const corp = S.profit * (21 + S.stateTax) / 100;
-  const cTotal = corp + 0.15 * (S.profit - corp);
-  const llc = S.profit * S.llcRate / 100;
-  const q1 = S.hours * S.rate * 50;
-  const q3 = q1 * S.save / 100;
-  const cust = S.affected * S.capture / 100;
-  S.expected = {
-    q1: q1, q2: q1 * S.affected, q3: q3, q4: q3 - 12 * S.price,
-    q5: cust, q6: Math.ceil(cust / 12), q7: cust * S.price, q8: cust * S.price * 12,
-    q9: corp, q10: cTotal, q11: llc, q12: llc < cTotal ? "LLC" : "C-corp"
-  };
+  S.order = {};
+  for (const c of CHECKS) S.order[c.id] = await shuffle(wk, "ord" + c.id, (c.options ? c.options.length : 4));
+  const q1 = S.hours * S.rate * 50, q3 = q1 * S.save / 100, cust = S.affected * S.capture / 100;
+  const corp = S.profit * (21 + S.stateTax) / 100, cTotal = corp + 0.15 * (S.profit - corp), llc = S.profit * S.llcRate / 100;
+  S.expected = { q1, q2: q1 * S.affected, q3, q4: q3 - 12 * S.price, q5: cust, q6: Math.ceil(cust / 12), q7: cust * S.price, q8: cust * S.price * 12, q9: corp, q10: cTotal, q11: llc, q12: llc < cTotal ? "LLC" : "C-corporation" };
   return S;
 }
 
-/* ---------- questions ---------- */
+/* ---------- formatting ---------- */
 const money = v => (v < 0 ? "−$" : "$") + Math.abs(v).toLocaleString("en-US", { minimumFractionDigits: Number.isInteger(Math.round(v * 100) / 100) ? 0 : 2, maximumFractionDigits: 2 });
-const num = v => v.toLocaleString("en-US", { maximumFractionDigits: 2 });
+const num = v => Number(v).toLocaleString("en-US", { maximumFractionDigits: 2 });
+const pcite = (S, k) => `(${S.cite.inText}, ${S.cite.year}, p. ${S.pages[k]})`;
 
+/* ---------- numeric questions ---------- */
 const NUMERIC = [
-  { id: "q1", part: "A", kind: "money",
-    prompt: S => `Each potential customer loses <b>${num(S.hours)} hours per week</b> to the problem, and that time is worth <b>${money(S.rate)} per hour</b>. Assume <b>50 working weeks</b> per year. What does the problem cost <b>one customer per year</b>?`,
-    hint: () => `Hours per week × cost per hour × 50 weeks.` },
-  { id: "q2", part: "A", kind: "money",
-    prompt: S => `There are <b>${num(S.affected)}</b> potential customers in your target market. What is the <b>total annual cost</b> of the problem across all of them?`,
-    hint: () => `Use your answer above: cost per customer × number of potential customers.` },
-  { id: "q3", part: "A", kind: "money",
-    prompt: S => `Your solution cuts the lost time by <b>${S.save}%</b>. How much <b>value per year</b> does it create for one customer?`,
-    hint: () => `Annual cost per customer × the percentage your solution saves.` },
-  { id: "q4", part: "A", kind: "money",
-    prompt: S => `You plan to charge <b>${money(S.price)} per month</b>. What is one customer's <b>net annual benefit</b> (value created minus what they pay you in a year)? If it is negative, enter a negative number.`,
-    hint: () => `Annual value created − (monthly price × 12).` },
-  { id: "q5", part: "B", kind: "number",
-    prompt: S => `Your first-year SMART objective is to win <b>${S.capture}%</b> of the potential customers. How many <b>customers</b> is that?`,
-    hint: () => `Potential customers × capture percentage.` },
-  { id: "q6", part: "B", kind: "number",
-    prompt: () => `To hit that target in 12 months, how many <b>new customers per month</b> do you need on average? Round <b>up</b> to a whole customer.`,
-    hint: () => `Target customers ÷ 12, then round up.` },
-  { id: "q7", part: "B", kind: "money",
-    prompt: () => `If you reach the target, what is your <b>monthly recurring revenue</b> (MRR) at the end of year one?`,
-    hint: () => `Customers × monthly price.` },
-  { id: "q8", part: "B", kind: "money",
-    prompt: () => `What is the matching <b>annual recurring revenue</b> (ARR)?`,
-    hint: () => `MRR × 12.` },
-  { id: "q9", part: "C", kind: "money",
-    prompt: S => `By year three you project <b>${money(S.profit)}</b> in pre-tax profit. As a C-corporation you pay the 21% federal corporate rate plus an assumed <b>${num(S.stateTax)}%</b> state corporate rate (treat them as simply adding together). What is the <b>corporate income tax</b>?`,
-    hint: () => `Profit × (21% + state rate).` },
-  { id: "q10", part: "C", kind: "money",
-    prompt: () => `The corporation pays out all remaining after-tax profit to you as dividends, taxed at <b>15%</b>. What is the <b>total tax</b> under the C-corporation (corporate tax + dividend tax)?`,
-    hint: () => `Corporate tax + 15% × (profit − corporate tax). This is "double taxation."` },
-  { id: "q11", part: "C", kind: "money",
-    prompt: S => `As an LLC, profit passes through to you and is taxed once at your assumed combined personal rate of <b>${S.llcRate}%</b>. What is the <b>total tax</b> under the LLC?`,
-    hint: () => `Profit × your combined personal rate.` }
+  { id: "q1", sec: 6, kind: "money", prompt: S => `Each customer loses <b>${num(S.hours)} hours per week</b> to the problem, and that time is worth <b>${money(S.rate)} per hour</b>. Assume 50 working weeks. What does the problem cost <b>one customer per year</b>?`, hint: `Hours per week × value per hour × 50 weeks.` },
+  { id: "q2", sec: 6, kind: "money", prompt: S => `There are <b>${num(S.affected)}</b> potential customers. What is the <b>total annual cost</b> of the problem across all of them?`, hint: `Cost per customer per year × number of potential customers.` },
+  { id: "q3", sec: 6, kind: "money", prompt: S => `Solutions like yours cut the lost time by <b>${S.save}%</b>. How much <b>value per year</b> does your solution create for one customer?`, hint: `Annual cost per customer × percentage saved.` },
+  { id: "q4", sec: 6, kind: "money", prompt: S => `At a price of <b>${money(S.price)} per month</b>, what is one customer's <b>net annual benefit</b> (value created minus what they pay you in a year)? Enter a negative number if it is negative.`, hint: `Annual value created − (monthly price × 12).` },
+  { id: "q5", sec: 7, kind: "number", prompt: S => `Your year-one target is <b>${S.capture}%</b> of potential customers. How many <b>customers</b> is that?`, hint: `Potential customers × capture percentage.` },
+  { id: "q6", sec: 7, kind: "number", prompt: () => `How many <b>new customers per month</b> do you need on average to reach that in 12 months? Round <b>up</b>.`, hint: `Target customers ÷ 12, rounded up to a whole customer.` },
+  { id: "q7", sec: 7, kind: "money", prompt: () => `If you hit the target, what is your <b>monthly recurring revenue</b> (MRR) at the end of year one?`, hint: `Customers × monthly price.` },
+  { id: "q8", sec: 7, kind: "money", prompt: () => `What is the matching <b>annual recurring revenue</b> (ARR)?`, hint: `MRR × 12.` },
+  { id: "q9", sec: 8, kind: "money", prompt: S => `You project <b>${money(S.profit)}</b> in pre-tax profit in year three. As a C-corporation you pay the 21% federal rate plus an assumed <b>${num(S.stateTax)}%</b> state rate (add them together). What is the <b>corporate income tax</b>?`, hint: `Profit × (21% + state rate).` },
+  { id: "q10", sec: 8, kind: "money", prompt: () => `The corporation pays all remaining after-tax profit to you as dividends, taxed at <b>15%</b>. What is the <b>total tax</b> under the C-corporation?`, hint: `Corporate tax + 15% × (profit − corporate tax).` },
+  { id: "q11", sec: 8, kind: "money", prompt: S => `As an LLC, profit passes through and is taxed once at your assumed personal rate of <b>${S.llcRate}%</b>. What is the <b>total tax</b> under the LLC?`, hint: `Profit × personal rate.` },
+  { id: "q12", sec: 8, kind: "choice", options: ["LLC", "C-corporation"], prompt: () => `Which structure has the <b>lower total tax</b> in year three?`, hint: `Compare your LLC total with your C-corporation total.` }
 ];
-const CHOICE = [
-  { id: "q12", part: "C",
-    prompt: () => `Based on your numbers, which structure has the <b>lower total tax</b> in year three?`,
-    options: ["LLC", "C-corp"],
-    hint: () => `Compare your LLC total with your C-corporation total.` }
+
+/* ---------- concept checkpoints: same answer for everyone, unlock the next section ---------- */
+const CHECKS = [
+  { id: "c1", sec: 1, prompt: "A journal article's DOI is:", correct: 0,
+    options: ["A permanent identifier that links to one specific published article", "The journal's website address", "A page number range", "Optional, and can be left out of an APA 7 reference"],
+    hint: "In APA 7, include the DOI as a link (https://doi.org/…) for any journal article that has one. It must lead to the exact article you cite." },
+  { id: "c4", sec: 4, prompt: S => `You use the potential-customer figure from your Nakamoto Reports source. Which in-text citation is correct?`, correct: 0,
+    options: S => [pcite(S, "affected"), `(${S.cite.narrative}, ${S.cite.year}, p. ${S.pages.affected})`, `(${CONFIG.PUBLISHER}, ${S.cite.year})`, `(${S.cite.inText}, p. ${S.pages.affected})`],
+    hint: "Parenthetical citations use the author surname(s) with \"&\", the year, and the page number for a specific figure." },
+  { id: "c5", sec: 5, prompt: "Which of these is quantitative analysis?", correct: 0,
+    options: ["The problem costs each customer about $4,000 a year in lost time", "Customers describe the problem as frustrating", "The founder is passionate about solving it", "The problem has been around for a long time"],
+    hint: "Quantitative analysis uses numbers you can measure. Qualitative analysis describes experiences, opinions, and reasons." },
+  { id: "c6", sec: 6, prompt: "If a customer's net annual benefit is negative, what does it most likely mean?", correct: 0,
+    options: ["At this price, customers pay more than the measurable value they receive", "The business is already profitable", "The market is too large to serve", "The math must be wrong"],
+    hint: "A negative net benefit means the price is higher than the measured value. You would need to lower the price, create more value, or show value the numbers miss." },
+  { id: "c7", sec: 7, prompt: "Which objective is SMART?", correct: 0,
+    options: ["Acquire 400 paying customers in Ohio by December 31, 2027", "Become the best company in the industry", "Grow fast and win lots of customers", "Increase sales as much as possible next year"],
+    hint: "SMART objectives are Specific, Measurable, Achievable, Relevant, and Time-bound. Look for a number and a deadline." },
+  { id: "c8", sec: 8, prompt: "Which legal structure is taxed twice on profits paid out to its owners?", correct: 0,
+    options: ["C-corporation", "LLC", "Sole proprietorship", "S-corporation"],
+    hint: "A C-corporation pays corporate income tax, and owners pay tax again on dividends. LLCs, sole proprietorships, and S-corporations pass profit through to owners." }
 ];
-const APA = [
-  { id: "a1",
-    prompt: `A source has three authors: Lee, Patel, and Gomez (2024). Which is the correct APA 7 parenthetical citation?`,
-    options: ["(Lee et al., 2024)", "(Lee, Patel, & Gomez, 2024)", "(Lee et. al, 2024)", "(Lee and others, 2024)"],
-    correct: 0,
-    hint: `In APA 7, a work with three or more authors uses the first author's surname plus "et al." from the very first citation. Note the period goes after "al," not "et."` },
-  { id: "a2",
-    prompt: `Which narrative citation is formatted correctly in APA 7?`,
-    options: ["Bicksler and Hannah (2022) argue that…", "Bicksler & Hannah (2022) argue that…", "Bicksler & Hannah, 2022, argue that…", "(Bicksler and Hannah, 2022) argue that…"],
-    correct: 0,
-    hint: `Narrative citations (names in your sentence) use "and." Parenthetical citations use "&": (Bicksler & Hannah, 2022).` },
-  { id: "a3",
-    prompt: `You quote a sentence word for word from an industry report. What must the in-text citation include?`,
-    options: ["Author, year, and the page or paragraph number", "Author and year only", "The report title and year", "The URL of the report"],
-    correct: 0,
-    hint: `Direct quotations need a location: (Author, Year, p. 12), or a paragraph number (para. 4) when there are no pages.` },
-  { id: "a4",
-    prompt: `How is an APA 7 reference list arranged?`,
-    options: ["Alphabetically by the first author's surname, with a hanging indent", "In the order the sources are cited in the paper", "By publication year, newest first", "Grouped by source type (books, articles, websites)"],
-    correct: 0,
-    hint: `References are alphabetical by the first author's surname, double-spaced, with a 0.5-inch hanging indent.` }
-];
-const WRITTEN = [
-  { id: "w1", label: "Vision statement", help: "Where will the business be in 5–10 years? One or two sentences." },
-  { id: "w2", label: "Mission statement", help: "What does the business do, for whom, and why? Tie it to the problem you sized in Part A." },
-  { id: "w3", label: "Core values", help: "Three to five values, each with one sentence on what it means in practice." },
-  { id: "w4", label: "Short- and long-term goals with benchmarks", help: "At least one short-term (year one) and one long-term (3–5 years) goal, each with a benchmark you will measure." },
-  { id: "w5", label: "One SMART objective and its strategy", help: "Use your Part B numbers. State the objective in SMART form, then the strategy you will use to reach it." },
-  { id: "w6", label: "Legal structure", help: "Which structure will you form in your assigned state, and why? Use your Part C numbers and at least one other factor (liability, investors, paperwork)." }
-];
-const AUTO_IDS = [...NUMERIC.map(q => q.id), ...CHOICE.map(q => q.id), ...APA.map(q => q.id)];
 
 function parseNum(s) {
   if (s == null) return NaN;
@@ -287,7 +273,8 @@ function parseNum(s) {
   return Number(t);
 }
 function isCorrect(S, id, value) {
-  if (id.startsWith("a")) return String(value) === String(APA.find(x => x.id === id).correct);
+  const chk = CHECKS.find(c => c.id === id);
+  if (chk) return String(value) === String(chk.correct);
   const exp = S.expected[id];
   if (typeof exp === "string") return String(value) === exp;
   const v = parseNum(value);
@@ -295,61 +282,104 @@ function isCorrect(S, id, value) {
   const tol = id === "q5" || id === "q6" ? 0.5 : Math.max(1, Math.abs(exp) * 0.002);
   return Math.abs(v - exp) <= tol;
 }
+const ALL_IDS = [...NUMERIC.map(q => q.id), ...CHECKS.map(c => c.id)];
 
-/* ---------- save file (CSV) ---------- */
+/* ---------- source validation ---------- */
+const SRC_TYPES = {
+  journal: { label: "Journal article", link: "DOI", ph: "10.xxxx/xxxxx", check: v => /^10\.\d{4,9}\/\S+$/.test(v.replace(/^https?:\/\/(dx\.)?doi\.org\//i, "").trim()), msg: "Enter the article's DOI (it starts with 10. and contains a slash)." },
+  gov:     { label: "Government data", link: "Link (.gov)", ph: "https://www.census.gov/…", check: v => /^https?:\/\/[^\s/]+\.gov(\/|$)/i.test(v.trim()), msg: "Enter a link to a .gov website." },
+  sec:     { label: "Company filing (SEC)", link: "SEC EDGAR link", ph: "https://www.sec.gov/…", check: v => /^https?:\/\/(www\.)?sec\.gov\//i.test(v.trim()), msg: "Enter a link to the filing on sec.gov." },
+  report:  { label: "Industry or professional report", link: "Link", ph: "https://…", check: v => /^https?:\/\/[^\s.]+\.[^\s]+$/i.test(v.trim()), msg: "Enter the full web address (starting with https://)." }
+};
+function sourceOK(s) { return s && SRC_TYPES[s.type] && (s.ref || "").trim().length >= 25 && SRC_TYPES[s.type].check(s.link || ""); }
+</script>
+<script id="xlsx">
 function b64enc(str) { let s = ""; for (const x of enc.encode(str)) s += String.fromCharCode(x); return btoa(s); }
 function b64dec(b64) { const bin = atob(b64); const u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return new TextDecoder().decode(u); }
-function csvCell(v, safe) {
-  let s = String(v == null ? "" : v);
-  if (safe && /^[=+\-@\t\r]/.test(s)) s = "'" + s;
-  return '"' + s.replace(/"/g, '""') + '"';
-}
-function parseCSV(text) {
-  const rows = []; let row = [], cell = "", q = false;
-  for (let i = 0; i < text.length; i++) {
-    const c = text[i];
-    if (q) {
-      if (c === '"') { if (text[i + 1] === '"') { cell += '"'; i++; } else q = false; }
-      else cell += c;
-    } else if (c === '"') q = true;
-    else if (c === ",") { row.push(cell); cell = ""; }
-    else if (c === "\n" || c === "\r") {
-      if (c === "\r" && text[i + 1] === "\n") i++;
-      row.push(cell); rows.push(row); row = []; cell = "";
-    } else cell += c;
+/* ---------- hand-in file (Excel .xlsx, built in the browser) ---------- */
+const XLSX_MIME = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+const CRC_TABLE = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+function crc32(u8) { let c = 0xFFFFFFFF; for (let i = 0; i < u8.length; i++) c = CRC_TABLE[(c ^ u8[i]) & 0xFF] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; }
+function zipFiles(files) {
+  const parts = [], central = []; let offset = 0;
+  for (const f of files) {
+    const name = enc.encode(f.name), data = f.data, crc = crc32(data);
+    const lh = new DataView(new ArrayBuffer(30));
+    lh.setUint32(0, 0x04034b50, true); lh.setUint16(4, 20, true); lh.setUint16(8, 0, true);
+    lh.setUint32(14, crc, true); lh.setUint32(18, data.length, true); lh.setUint32(22, data.length, true); lh.setUint16(26, name.length, true);
+    parts.push(new Uint8Array(lh.buffer), name, data);
+    const ch = new DataView(new ArrayBuffer(46));
+    ch.setUint32(0, 0x02014b50, true); ch.setUint16(4, 20, true); ch.setUint16(6, 20, true);
+    ch.setUint32(16, crc, true); ch.setUint32(20, data.length, true); ch.setUint32(24, data.length, true); ch.setUint16(28, name.length, true);
+    ch.setUint32(42, offset, true);
+    central.push(new Uint8Array(ch.buffer), name);
+    offset += 30 + name.length + data.length;
   }
-  if (cell !== "" || row.length) { row.push(cell); rows.push(row); }
-  return rows;
+  const cdSize = central.reduce((s, p) => s + p.length, 0);
+  const end = new DataView(new ArrayBuffer(22));
+  end.setUint32(0, 0x06054b50, true); end.setUint16(8, files.length, true); end.setUint16(10, files.length, true);
+  end.setUint32(12, cdSize, true); end.setUint32(16, offset, true);
+  return new Blob([...parts, ...central, new Uint8Array(end.buffer)], { type: XLSX_MIME });
 }
-async function buildHandIn(state) {
-  const json = JSON.stringify(state);
-  const check = await sha256Hex(CONFIG.FILE_SALT + json);
-  const rows = [["Field", "Value"],
-    ["Lab", "BUEN 644 Week 1: Find a Problem"], ["Term", state.term], ["Name", state.name], ["Access code", state.code],
-    ["Business idea", state.idea], ["Saved", new Date(state.saved).toLocaleString()], ["", ""],
-    ["Question", "Answer / Correct / Wrong attempts"]];
-  for (const id of AUTO_IDS) {
-    const a = state.ans[id] || {};
-    let shown = a.val == null ? "" : a.val;
-    const apa = APA.find(x => x.id === id);
-    if (apa && shown !== "") shown = apa.options[Number(shown)];
-    rows.push([id.toUpperCase(), `${shown} | ${a.correct ? "correct" : "not yet"} | wrong attempts: ${(a.wrong || []).length}`]);
+async function unzipFiles(u8) {
+  const dv = new DataView(u8.buffer, u8.byteOffset, u8.byteLength);
+  let e = u8.length - 22; while (e >= 0 && dv.getUint32(e, true) !== 0x06054b50) e--;
+  if (e < 0) throw new Error("not a zip");
+  const count = dv.getUint16(e + 10, true); let p = dv.getUint32(e + 16, true);
+  const out = {};
+  for (let i = 0; i < count; i++) {
+    const method = dv.getUint16(p + 10, true), csize = dv.getUint32(p + 20, true);
+    const nlen = dv.getUint16(p + 28, true), xlen = dv.getUint16(p + 30, true), clen = dv.getUint16(p + 32, true);
+    const lho = dv.getUint32(p + 42, true);
+    const name = new TextDecoder().decode(u8.subarray(p + 46, p + 46 + nlen));
+    const start = lho + 30 + dv.getUint16(lho + 26, true) + dv.getUint16(lho + 28, true);
+    const raw = u8.subarray(start, start + csize);
+    out[name] = method === 0 ? raw : new Uint8Array(await new Response(new Blob([raw]).stream().pipeThrough(new DecompressionStream("deflate-raw"))).arrayBuffer());
+    p += 46 + nlen + xlen + clen;
   }
-  rows.push(["", ""]);
-  for (const w of WRITTEN) rows.push([w.label, state.written[w.id] || ""]);
-  rows.push(["", ""], ["Do not edit below this line", "Used to verify the file."]);
-  const b64 = b64enc(json);
-  for (let i = 0, n = 1; i < b64.length; i += 8000, n++) rows.push(["data_" + n, "d:" + b64.slice(i, i + 8000)]);
-  rows.push(["check", "h:" + check]);
-  return rows.map(r => r.map(v => csvCell(v, !(r[0].startsWith("data_") || r[0] === "check"))).join(",")).join("\r\n");
+  return out;
 }
-async function readHandIn(text) {
-  const rows = parseCSV(text.replace(/^\uFEFF/, ""));
-  let b64 = "", check = "";
-  const chunks = rows.filter(r => /^data_\d+$/.test(r[0])).sort((a, b) => Number(a[0].slice(5)) - Number(b[0].slice(5)));
-  for (const r of chunks) b64 += String(r[1] || "").replace(/^d:/, "");
-  const cr = rows.find(r => r[0] === "check");
-  if (cr) check = String(cr[1] || "").replace(/^h:/, "");
+const xmlEsc = s => String(s == null ? "" : s).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const colName = i => String.fromCharCode(65 + i);
+function sheetXML(rows, widths) {
+  const body = rows.map((r, ri) => `<row r="${ri + 1}">` + r.map((c, ci) => {
+    if (c == null || c === "") return "";
+    const cell = typeof c === "object" ? c : { v: c };
+    const ref = colName(ci) + (ri + 1), s = cell.s ? ` s="${cell.s}"` : "";
+    return typeof cell.v === "number" && isFinite(cell.v)
+      ? `<c r="${ref}"${s}><v>${cell.v}</v></c>`
+      : `<c r="${ref}"${s} t="inlineStr"><is><t xml:space="preserve">${xmlEsc(cell.v)}</t></is></c>`;
+  }).join("") + `</row>`).join("");
+  const cols = widths ? `<cols>${widths.map((w, i) => `<col min="${i + 1}" max="${i + 1}" width="${w}" customWidth="1"/>`).join("")}</cols>` : "";
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">${cols}<sheetData>${body}</sheetData></worksheet>`;
+}
+async function readHandIn(arrayBuffer) {
+  let files;
+  try { files = await unzipFiles(new Uint8Array(arrayBuffer)); }
+  catch (e) { throw new Error("This isn't an Excel file from the Week 1 lab."); }
+  const dec = n => files[n] ? new TextDecoder().decode(files[n]) : null;
+  const P = s => new DOMParser().parseFromString(s, "application/xml");
+  const wb = P(dec("xl/workbook.xml") || "<x/>"), rels = P(dec("xl/_rels/workbook.xml.rels") || "<x/>");
+  const sheetEl = [...wb.getElementsByTagName("sheet")].find(s => s.getAttribute("name") === "data");
+  if (!sheetEl) throw new Error("This file has no lab data. Make sure it is the file downloaded from the Week 1 lab.");
+  const rid = sheetEl.getAttribute("r:id") || sheetEl.getAttributeNS("http://schemas.openxmlformats.org/officeDocument/2006/relationships", "id");
+  const rel = [...rels.getElementsByTagName("Relationship")].find(r => r.getAttribute("Id") === rid);
+  let target = rel.getAttribute("Target").replace(/^\/?xl\//, "").replace(/^\//, "");
+  const shared = files["xl/sharedStrings.xml"] ? [...P(dec("xl/sharedStrings.xml")).getElementsByTagName("si")].map(si => [...si.getElementsByTagName("t")].map(t => t.textContent).join("")) : [];
+  const sheet = P(dec("xl/" + target));
+  const kv = {};
+  for (const row of sheet.getElementsByTagName("row")) {
+    const vals = {};
+    for (const c of row.getElementsByTagName("c")) {
+      const col = (c.getAttribute("r") || "").replace(/\d+/g, ""), t = c.getAttribute("t");
+      const v = c.getElementsByTagName("v")[0];
+      vals[col] = t === "s" ? shared[Number(v && v.textContent)] : t === "inlineStr" ? [...c.getElementsByTagName("t")].map(x => x.textContent).join("") : (v ? v.textContent : "");
+    }
+    if (vals.A) kv[vals.A] = vals.B || "";
+  }
+  let b64 = "";
+  for (let n = 1; kv["data_" + n] != null; n++) b64 += kv["data_" + n].replace(/^d:/, "");
+  const check = String(kv.check || "").replace(/^h:/, "");
   if (!b64) throw new Error("This file has no lab data. Make sure it is the file downloaded from the Week 1 lab.");
   let json, state;
   try { json = b64dec(b64); state = JSON.parse(json); }
@@ -358,141 +388,439 @@ async function readHandIn(text) {
   return { state, intact };
 }
 
-/* ---------- page ---------- */
+</script>
+<script id="ui">
 const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-const STORE = "buen644-w1-" + CONFIG.TERM;
+const words = s => (String(s || "").trim().match(/\S+/g) || []).length;
+const STORE = "buen644-w1v2-" + CONFIG.TERM;
+const MINWORDS = 75;
 let state = null, S = null;
 
-function save() {
-  if (!state) return;
-  state.saved = Date.now();
-  try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) {}
-}
-function downloadText(filename, text) {
-  const blob = new Blob(["\uFEFF" + text], { type: "text/csv;charset=utf-8" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob); a.download = filename;
-  document.body.appendChild(a); a.click(); a.remove();
-  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
-}
-function safeFile(s) { return String(s).replace(/[^A-Za-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
+function save() { if (!state) return; state.saved = Date.now(); try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) {} }
 
-async function startLab(fromState) {
-  state = fromState;
-  S = await buildScenario(state.name, state.code);
+/* ---------------- policy text ---------------- */
+const ACKS = [
+  { id: "k1", text: "I have read and understand the course syllabus, the University's <i>Student Guidelines for the Use of AI</i>, and the Academic Dishonesty Policy, and I agree to follow them." },
+  { id: "k2", text: "I understand that late work will <b>not</b> be accepted for <b>any</b> assignment in this course, including labs, papers, discussion posts, the practical connection assignment, the final business plan, and the final exam. All deadlines are 11:59 PM Eastern Time on the due date shown in the syllabus, and any work submitted after the deadline receives a zero." },
+  { id: "k3", text: "I will use APA 7 for all papers and discussion posts: Times New Roman 12-point, double-spaced, 1-inch margins, no extra spacing between paragraphs, in-text citations, and a reference list." },
+  { id: "k4", text: "I will not use bullet points in papers or discussion posts. I understand the first time results in a poor grade, and after that a zero." },
+  { id: "k5", text: "Every statement of fact I make will be supported by a specific, traceable outside source. Every journal article I cite will include its real DOI, and that DOI will lead to the exact article I cite." },
+  { id: "k6", text: "I will cite the Nakamoto Reports source in my lab exactly as it is given to me." }
+];
+
+/* ---------------- sections ---------------- */
+const SECTIONS = [
+  { n: 1, title: "Before you begin", done: () => ACKS.every(a => state.ack[a.id]) && sigOK() && correct("c1") },
+  { n: 2, title: "Your venture", done: () => !!state.s2done },
+  { n: 3, title: "Can the problem make money?", done: () => !!state.s3done },
+  { n: 4, title: "Your scenario", done: () => !!state.citeAck && correct("c4") },
+  { n: 5, title: "The problem in your own words", done: () => ["p1", "p2", "p3"].every(k => words(state.written[k]) >= MINWORDS) && correct("c5") && gateOK("g5") },
+  { n: 6, title: "Size the problem", done: () => ["q1", "q2", "q3", "q4", "c6"].every(correct) },
+  { n: 7, title: "Set a SMART target", done: () => ["q5", "q6", "q7", "q8", "c7"].every(correct) },
+  { n: 8, title: "Choose a legal structure", done: () => ["q9", "q10", "q11", "q12", "c8"].every(correct) && !!state.legalChoice && words(state.written.legal) >= MINWORDS && gateOK("g8") },
+  { n: 9, title: "Download and hand in", done: () => false }
+];
+const correct = id => !!(state.ans[id] && state.ans[id].correct);
+const sigOK = () => normName(state.sig) === normName(state.name);
+const gateOK = g => { const x = state.gates[g]; return !!(x && x.ans === "yes" && x.sources.some(sourceOK)); };
+const unlocked = n => n === 1 || SECTIONS[n - 2].done();
+
+/* ---------------- start / load ---------------- */
+async function startLab(st) {
+  state = st;
+  state.sc = await studentCode(state.name, state.code);
+  CHECK_ORDER.c1 = await shuffle(await sha256Hex(["C1", CONFIG.TERM, normName(state.name), normCode(state.code)].join("|")), "ord", 4);
+  if (state.industry) S = await buildScenario(state.name, state.code, state.industry);
   save();
   $("startView").classList.add("hidden");
   $("labView").classList.remove("hidden");
   $("progressBar").classList.remove("hidden");
-  $("whoami").textContent = `${state.name} · ${state.code}`;
-  renderLab();
+  $("whoami").textContent = `${state.name} · student code ${state.sc}`;
+  $("sections").innerHTML = SECTIONS.map(s => `<section class="card" id="sec${s.n}"><div class="lockmsg">🔒 Section ${s.n}: ${esc(s.title)}. Finish Section ${s.n - 1} to unlock.</div></section>`).join("");
+  refresh();
 }
 
-function renderLab() {
-  $("ideaOut").textContent = state.idea;
-  $("factsOut").innerHTML = `
-    <div class="fact"><div class="k">State of incorporation <span class="badge pub">Public</span></div><div class="v">${esc(S.state)}</div></div>
-    <div class="fact"><div class="k">Potential customers <span class="badge priv">Private</span></div><div class="v">${num(S.affected)}</div></div>
-    <div class="fact"><div class="k">Time lost per customer <span class="badge priv">Private</span></div><div class="v">${num(S.hours)} hrs/week</div></div>
-    <div class="fact"><div class="k">Value of that time <span class="badge priv">Private</span></div><div class="v">${money(S.rate)}/hour</div></div>
-    <div class="fact"><div class="k">Planned price <span class="badge priv">Private</span></div><div class="v">${money(S.price)}/month</div></div>
-    <div class="fact"><div class="k">Year-one capture target <span class="badge priv">Private</span></div><div class="v">${S.capture}%</div></div>`;
-
-  const sec = (part, title, sub) => `<h2>${title}</h2><p class="sub">${sub}</p>` +
-    NUMERIC.filter(q => q.part === part).map(numericHTML).join("") +
-    CHOICE.filter(q => q.part === part).map(choiceHTML).join("");
-  $("secA").innerHTML = sec("A", "Part A · Size the problem", "Turn the problem into numbers. A lender or investor wants to know how much the problem costs and how much value you create.");
-  $("secB").innerHTML = sec("B", "Part B · Set a SMART target", "Make your first-year objective Specific, Measurable, Achievable, Relevant, and Time-bound.");
-  $("secC").innerHTML = sec("C", "Part C · Compare legal structures", `A simplified tax comparison. These rates are planning assumptions, not the actual rates in ${esc(S.state)}. In your DAR post and paper, research the real requirements for ${esc(S.state)}.`);
-  $("secE").innerHTML = `<h2>Part E · APA 7 check</h2><p class="sub">Every paper in this course uses APA 7. Four quick questions.</p>` + APA.map(apaHTML).join("");
-
-  $("writtenOut").innerHTML = WRITTEN.map(w => `
-    <label for="${w.id}">${esc(w.label)}</label>
-    <p class="sub" style="margin:0 0 6px">${esc(w.help)}</p>
-    <textarea id="${w.id}"></textarea>`).join("");
-  for (const w of WRITTEN) {
-    const t = $(w.id); t.value = state.written[w.id] || "";
-    t.addEventListener("input", () => { state.written[w.id] = t.value; save(); updateProgress(); });
+const rendered = {};
+function refresh() {
+  for (const s of SECTIONS) {
+    const el = $("sec" + s.n), open = unlocked(s.n);
+    el.classList.toggle("locked", !open);
+    if (open && !rendered[s.n]) {
+      if (!state.sec[s.n]) state.sec[s.n] = { open: Date.now() };
+      RENDER[s.n](el); rendered[s.n] = true;
+    }
+    const isDone = s.done();
+    el.classList.toggle("complete", isDone);
+    if (isDone && state.sec[s.n] && !state.sec[s.n].done) state.sec[s.n].done = Date.now();
   }
+  const doneCount = SECTIONS.filter(s => s.done()).length;
+  const right = ALL_IDS.filter(correct).length;
+  $("progressText").textContent = `${doneCount} of 8 sections complete · ${right}/${ALL_IDS.length} checked answers correct`;
+  save();
+}
 
-  for (const id of AUTO_IDS) restoreQ(id);
-  document.querySelectorAll("[data-num]").forEach(inp => {
+function head(n, goal) { return `<div class="secnum">Section ${n}</div><h2>${esc(SECTIONS[n - 1].title)}<span class="done-badge">✓ Complete</span></h2><p class="goal">Goal: ${goal}</p>`; }
+
+/* ---------------- question widgets ---------------- */
+function numericHTML(q, first) {
+  return `<div class="q${first ? " first" : ""}" id="box-${q.id}"><p class="prompt"><b>${q.id.toUpperCase()}.</b> ${q.prompt(S)}</p>
+    <div class="ans"><input type="text" inputmode="decimal" data-num="${q.id}" placeholder="${q.kind === "money" ? "$" : "number"}"><span class="status"></span><span class="tries"></span></div>
+    <div class="hint"><b>Not quite.</b> ${q.hint}</div></div>`;
+}
+function choiceHTML(id, prompt, options, order, hint, first) {
+  return `<div class="q${first ? " first" : ""}" id="box-${id}"><p class="prompt"><b>${id.startsWith("c") ? "Checkpoint" : id.toUpperCase() + "."}</b> ${prompt}</p>
+    <div class="opts">${order.map(i => `<label><input type="radio" name="${id}" value="${esc(options[i])}" data-choice="${id}" data-idx="${i}"> ${esc(options[i])}</label>`).join("")}</div>
+    <div class="ans"><span class="status"></span><span class="tries"></span></div>
+    <div class="hint"><b>Not quite.</b> ${hint}</div></div>`;
+}
+function checkHTML(id) {
+  const c = CHECKS.find(x => x.id === id);
+  const opts = typeof c.options === "function" ? c.options(S) : c.options;
+  const order = S && S.order[id] ? S.order[id] : CHECK_ORDER[id];
+  return choiceHTML(id, typeof c.prompt === "function" ? c.prompt(S) : c.prompt, opts, order, c.hint, false);
+}
+let CHECK_ORDER = {};
+function wireQuestions(root) {
+  root.querySelectorAll("[data-num]").forEach(inp => {
     inp.addEventListener("change", () => answer(inp.dataset.num, inp.value));
     inp.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); answer(inp.dataset.num, inp.value); } });
   });
-  document.querySelectorAll("[data-choice]").forEach(r => r.addEventListener("change", () => answer(r.dataset.choice, r.value)));
-  updateProgress();
+  root.querySelectorAll("[data-choice]").forEach(r => r.addEventListener("change", () => {
+    const id = r.dataset.choice;
+    answer(id, id.startsWith("c") ? r.dataset.idx : r.value);
+  }));
+  root.querySelectorAll(".q").forEach(b => restoreQ(b.id.slice(4)));
 }
-
-function numericHTML(q) {
-  return `<div class="q" id="box-${q.id}">
-    <p class="prompt"><b>${q.id.toUpperCase()}.</b> ${q.prompt(S)}</p>
-    <div class="ans"><input type="text" inputmode="decimal" data-num="${q.id}" placeholder="${q.kind === "money" ? "$" : "number"}">
-    <span class="status"></span><span class="tries"></span></div>
-    <div class="hint"><b>Not quite.</b> ${q.hint(S)}</div></div>`;
-}
-function choiceHTML(q) {
-  return `<div class="q" id="box-${q.id}">
-    <p class="prompt"><b>${q.id.toUpperCase()}.</b> ${q.prompt(S)}</p>
-    <div class="opts">${q.options.map(o => `<label><input type="radio" name="${q.id}" value="${esc(o)}" data-choice="${q.id}"> ${esc(o)}</label>`).join("")}</div>
-    <div class="ans"><span class="status"></span><span class="tries"></span></div>
-    <div class="hint"><b>Not quite.</b> ${q.hint(S)}</div></div>`;
-}
-function apaHTML(q) {
-  return `<div class="q" id="box-${q.id}">
-    <p class="prompt"><b>${q.id.toUpperCase()}.</b> ${esc(q.prompt)}</p>
-    <div class="opts">${S.optOrder[q.id].map(i => `<label><input type="radio" name="${q.id}" value="${i}" data-choice="${q.id}"> ${esc(q.options[i])}</label>`).join("")}</div>
-    <div class="ans"><span class="status"></span><span class="tries"></span></div>
-    <div class="hint"><b>Not quite.</b> ${esc(q.hint)}</div></div>`;
-}
-
 function answer(id, value) {
   const a = state.ans[id] || (state.ans[id] = { val: null, correct: false, wrong: [] });
   if (a.correct || String(value).trim() === "" || a.val === value) return;
   a.val = value;
-  if (isCorrect(S, id, value)) { a.correct = true; a.firstTry = a.wrong.length === 0; }
+  if (isCorrect(S, id, value)) { a.correct = true; a.at = Date.now(); }
   else a.wrong.push(value);
-  save(); restoreQ(id); updateProgress();
+  restoreQ(id); refresh();
 }
 function restoreQ(id) {
   const box = $("box-" + id); if (!box) return;
   const a = state.ans[id];
   const inp = box.querySelector("[data-num]");
   if (a && inp) inp.value = a.val == null ? "" : a.val;
-  if (a) box.querySelectorAll("[data-choice]").forEach(r => { r.checked = String(r.value) === String(a.val); });
+  if (a) box.querySelectorAll("[data-choice]").forEach(r => { r.checked = String(id.startsWith("c") ? r.dataset.idx : r.value) === String(a.val); });
   box.classList.toggle("correct", !!(a && a.correct));
   box.classList.toggle("wrong", !!(a && !a.correct && a.wrong.length));
-  if (a && a.correct) {
-    if (inp) inp.disabled = true;
-    box.querySelectorAll("[data-choice]").forEach(r => r.disabled = true);
-  }
+  if (a && a.correct) { if (inp) inp.disabled = true; box.querySelectorAll("[data-choice]").forEach(r => r.disabled = true); }
   box.querySelector(".status").textContent = a && a.correct ? "✓ Correct" : (a && a.wrong.length ? "✗ Try again" : "");
-  box.querySelector(".tries").textContent = a && a.wrong.length ? `${a.wrong.length} wrong ${a.wrong.length === 1 ? "attempt" : "attempts"}` : "";
-}
-function updateProgress() {
-  const done = AUTO_IDS.filter(id => state.ans[id] && state.ans[id].correct).length;
-  const wr = WRITTEN.filter(w => (state.written[w.id] || "").trim().length > 0).length;
-  $("progressText").textContent = `${done}/${AUTO_IDS.length} checked answers correct · ${wr}/${WRITTEN.length} written`;
+  box.querySelector(".tries").textContent = a && a.wrong.length ? `${a.wrong.length} wrong ${a.wrong.length === 1 ? "try" : "tries"}` : "";
 }
 
+/* ---------------- text areas with word counts ---------------- */
+function textHTML(key, label, help) {
+  return `<label for="t-${key}">${label}</label>${help ? `<p class="sub" style="margin:0 0 6px">${help}</p>` : ""}
+    <textarea id="t-${key}" data-text="${key}"></textarea><div class="count" id="cnt-${key}"></div>`;
+}
+function wireTexts(root) {
+  root.querySelectorAll("[data-text]").forEach(t => {
+    const k = t.dataset.text; t.value = state.written[k] || "";
+    const upd = () => { const w = words(t.value); $("cnt-" + k).textContent = `${w} words${w < MINWORDS ? ` · at least ${MINWORDS} needed` : " ✓"}`; };
+    upd();
+    t.addEventListener("input", () => { state.written[k] = t.value; upd(); refresh(); });
+  });
+}
+
+/* ---------------- self-check gate with sources ---------------- */
+function gateHTML(g, question) {
+  return `<div class="gate" id="gate-${g}"><h3 style="margin-top:0">Self-check</h3><p>${question}</p>
+    <div class="opts"><label><input type="radio" name="${g}" value="yes"> Yes</label><label><input type="radio" name="${g}" value="no"> No</label></div>
+    <div id="${g}-body"></div></div>`;
+}
+function wireGate(g, noMsg) {
+  const st = state.gates[g] || (state.gates[g] = { ans: null, sources: [] });
+  const box = $("gate-" + g);
+  box.querySelectorAll(`input[name=${g}]`).forEach(r => { r.checked = r.value === st.ans; r.onchange = () => { st.ans = r.value; drawGate(g, noMsg); refresh(); }; });
+  drawGate(g, noMsg);
+}
+function drawGate(g, noMsg) {
+  const st = state.gates[g], body = $(g + "-body");
+  if (st.ans === "no") { body.innerHTML = `<div class="box warn"><p>${noMsg}</p></div>`; return; }
+  if (st.ans !== "yes") { body.innerHTML = ""; return; }
+  if (!st.sources.length) st.sources.push({ type: "journal", ref: "", link: "" });
+  body.innerHTML = `<p class="sub">List the outside source(s) that support it, in addition to your Nakamoto Reports source. Write the full APA 7 reference and give its DOI or link. At least one is required.</p>` +
+    st.sources.map((s, i) => `<div class="src">
+      <label>Source ${i + 1} type</label>
+      <select data-g="${g}" data-i="${i}" data-f="type">${Object.entries(SRC_TYPES).map(([k, t]) => `<option value="${k}"${s.type === k ? " selected" : ""}>${t.label}</option>`).join("")}</select>
+      <label>APA 7 reference</label><textarea style="min-height:70px" data-g="${g}" data-i="${i}" data-f="ref">${esc(s.ref)}</textarea>
+      <label>${SRC_TYPES[s.type].link}</label><input type="text" data-g="${g}" data-i="${i}" data-f="link" value="${esc(s.link)}" placeholder="${SRC_TYPES[s.type].ph}">
+      <div class="msg" id="${g}-m${i}"></div></div>`).join("") +
+    (st.sources.length < 3 ? `<button class="ghost" id="${g}-add">Add another source</button>` : "");
+  body.querySelectorAll("[data-f]").forEach(el => {
+    const ev = el.tagName === "SELECT" ? "change" : "input";
+    el.addEventListener(ev, () => {
+      const s = st.sources[+el.dataset.i]; s[el.dataset.f] = el.value;
+      if (el.dataset.f === "type") return drawGate(g);
+      srcMsg(g, +el.dataset.i); refresh();
+    });
+  });
+  st.sources.forEach((_, i) => srcMsg(g, i));
+  const add = $(g + "-add"); if (add) add.onclick = () => { st.sources.push({ type: "journal", ref: "", link: "" }); drawGate(g); };
+}
+function srcMsg(g, i) {
+  const s = state.gates[g].sources[i], m = $(`${g}-m${i}`);
+  if (!s.ref && !s.link) { m.textContent = ""; return; }
+  if (sourceOK(s)) { m.className = "msg ok"; m.textContent = "✓ Source recorded"; return; }
+  m.className = "msg bad";
+  m.textContent = (s.ref || "").trim().length < 25 ? "Write the full APA 7 reference." : SRC_TYPES[s.type].msg;
+}
+
+/* ---------------- section renderers ---------------- */
+const RENDER = {
+1(el) {
+  el.innerHTML = head(1, "confirm you know the rules for this course before you start.") + `
+  <div class="box warn"><span class="tag">⚠ AI use and academic integrity</span>
+    <p>AI tools may only be used as allowed by the University's <i>Student Guidelines for the Use of AI</i>, the course syllabus and each assignment's instructions. Using AI without citing it, presenting AI output as your own work, or fabricating any source, citation, DOI or data is academic dishonesty. It will result in an automatic zero on the assignment and will be reported under the University's Academic Dishonesty Policy.</p>
+    <p><b>This is a graduate course. Act like graduate students.</b></p>
+    <p>The syllabus, the AI guidelines and the Academic Dishonesty Policy are in Blackboard under <b>Syllabus</b> or the <b>Start Here</b> folder.</p></div>
+  <div class="policy"><b>Academic Dishonesty Policy</b>
+    <p>As a Christian liberal arts university committed to the pursuit of truth and understanding, any act of academic dishonesty is especially distressing and cannot be tolerated. In general, academic dishonesty involves the abuse and misuse of information or people to gain an undeserved academic advantage or evaluation. The common forms of academic dishonesty include:</p>
+    <ol><li><b>cheating</b> – using deception in the taking of tests or the preparation of written work, using unauthorized materials, copying another person's work with or without consent, or assisting another in such activities;</li>
+    <li><b>lying</b> – falsifying, fabricating, or forging information in either written or spoken presentations;</li>
+    <li><b>plagiarism</b> – using the published writings, data, interpretations, or ideas of another without proper documentation;</li>
+    <li><b>multiple submissions</b> – submitting the same academic written or oral work for which credit was previously received, without the approval of the instructor.</li></ol>
+    <p>Episodes of academic dishonesty are reported as appropriate to the Vice President for Academic Affairs. The potential penalty for academic dishonesty includes 1) a failing grade on a particular assignment, 2) a failing grade for the entire course, 3) suspension or expulsion, or (4) revocation of a degree.</p></div>
+  <div class="ack">${ACKS.map(a => `<label><input type="checkbox" data-ack="${a.id}"> <span>${a.text}</span></label>`).join("")}</div>
+  <label for="inSig">Type your full name to sign</label>
+  <input type="text" id="inSig" style="max-width:360px"><div class="msg" id="sigMsg"></div>
+  ${checkHTML("c1")}`;
+  el.querySelectorAll("[data-ack]").forEach(c => { c.checked = !!state.ack[c.dataset.ack]; c.onchange = () => { state.ack[c.dataset.ack] = c.checked; refresh(); }; });
+  const sig = $("inSig"); sig.value = state.sig || "";
+  const sigUpd = () => { const m = $("sigMsg"); if (!sig.value) { m.textContent = ""; return; } m.className = sigOK() ? "msg ok" : "msg bad"; m.textContent = sigOK() ? "✓ Signed" : "Your signature must match the name you started with: " + state.name; };
+  sigUpd();
+  sig.addEventListener("input", () => { state.sig = sig.value; if (sigOK()) state.sigAt = state.sigAt || Date.now(); sigUpd(); refresh(); });
+  wireQuestions(el);
+},
+2(el) {
+  const v = state.venture;
+  el.innerHTML = head(2, "set up your venture. No math yet.") + `
+  <div class="box lesson"><span class="tag">Start here</span><p>Every business starts with a problem someone has. This week you name your venture, choose its industry, and state the problem in one plain sentence. You can refine the wording in your paper, but your industry cannot change after Section 3, because it shapes your scenario for the rest of the course.</p></div>
+  <label for="v-name">Venture name</label><input type="text" id="v-name">
+  <label for="v-ind">Industry</label><select id="v-ind"><option value="">Choose one…</option>${Object.entries(INDUSTRIES).map(([k, i]) => `<option value="${k}">${esc(i.label)}</option>`).join("")}</select>
+  <label for="v-prob">The problem, in one sentence</label><input type="text" id="v-prob" placeholder="What is broken, missing, slow, or too expensive, and for whom?">
+  <label>Who has the problem?</label>
+  <div class="opts">${["Consumers", "Businesses", "Both"].map(w => `<label><input type="radio" name="v-who" value="${w}"> ${w}</label>`).join("")}</div>
+  <div class="row" style="margin-top:14px"><button id="s2go">Continue</button></div><div class="msg" id="s2msg"></div>`;
+  $("v-name").value = v.name || ""; $("v-ind").value = v.industry || ""; $("v-prob").value = v.problem || "";
+  el.querySelectorAll("input[name=v-who]").forEach(r => r.checked = r.value === v.who);
+  const lock = () => { ["v-name", "v-ind", "v-prob", "s2go"].forEach(id => $(id).disabled = !!state.s2done); el.querySelectorAll("input[name=v-who]").forEach(r => r.disabled = !!state.s2done); };
+  lock();
+  $("s2go").onclick = () => {
+    v.name = $("v-name").value.trim(); v.industry = $("v-ind").value; v.problem = $("v-prob").value.trim();
+    const w = el.querySelector("input[name=v-who]:checked"); v.who = w ? w.value : "";
+    const m = $("s2msg"); m.className = "msg bad";
+    if (v.name.length < 2) return m.textContent = "Give your venture a name.";
+    if (!v.industry) return m.textContent = "Choose an industry.";
+    if (words(v.problem) < 8) return m.textContent = "Describe the problem in one full sentence.";
+    if (!v.who) return m.textContent = "Choose who has the problem.";
+    state.s2done = true; m.textContent = ""; lock(); refresh();
+  };
+},
+3(el) {
+  const M = state.money;
+  const Q = [["m1", "Do people already spend <b>money or time</b> dealing with this problem?"], ["m2", "Would they <b>pay</b> to make it go away?"], ["m3", "Can you <b>reach</b> the people who have it (where they shop, search, or gather)?"]];
+  el.innerHTML = head(3, "decide whether this problem can support a business.") + `
+  <div class="box lesson"><span class="tag">Learn</span><p>A real problem is not always a business. A problem can be <b>monetized</b> when people already lose money or time to it, they would pay to fix it, and you can reach them. If any of these is "no," you may need a different problem or a different customer.</p></div>
+  <div class="box example"><span class="tag">Example</span><p>Busy dog owners lose hours each week coordinating walkers (time), already pay walkers (money), and gather on neighborhood apps (reach). That problem can be monetized. "People wish the weather were nicer" fails all three.</p></div>
+  ${Q.map(([k, t]) => `<label>${t}</label><div class="opts row">${["Yes", "Not sure", "No"].map(o => `<label><input type="radio" name="${k}" value="${o}"> ${o}</label>`).join("")}</div>`).join("")}
+  <label>Overall: can your problem be monetized?</label>
+  <div class="opts row">${["Yes", "Not sure", "No"].map(o => `<label><input type="radio" name="m-verdict" value="${o}"> ${o}</label>`).join("")}</div>
+  <div id="s3body"></div>`;
+  const names = ["m1", "m2", "m3", "m-verdict"];
+  names.forEach(k => el.querySelectorAll(`input[name=${k}]`).forEach(r => { r.checked = M[k] === r.value; r.onchange = () => { M[k] = r.value; draw(); save(); }; }));
+  const draw = () => {
+    const b = $("s3body");
+    names.forEach(k => el.querySelectorAll(`input[name=${k}]`).forEach(r => r.disabled = !!state.s3done));
+    if (state.s3done) { b.innerHTML = `<div class="msg ok">✓ Saved. Your scenario is ready in Section 4.</div>`; return; }
+    if (!names.every(k => M[k])) { b.innerHTML = ""; return; }
+    if (M["m-verdict"] === "No") {
+      b.innerHTML = `<div class="box warn"><p>That's the point of Week 1: better to find out now. Go back and rethink your problem or your customer.</p></div><button class="ghost" id="s3back">Change my venture in Section 2</button>`;
+      $("s3back").onclick = () => { state.s2done = false; rendered[2] = false; RENDER[2]($("sec2")); rendered[2] = true; refresh(); $("sec2").scrollIntoView({ behavior: "smooth" }); };
+      return;
+    }
+    b.innerHTML = (M["m-verdict"] === "Not sure" ? `<div class="box example"><p>"Not sure" is honest for Week 1. Your paper must address that uncertainty with evidence.</p></div>` : "") +
+      `<p class="sub">Continuing locks your industry and builds your scenario.</p><button id="s3go">Build my scenario</button>`;
+    $("s3go").onclick = async () => {
+      state.industry = state.venture.industry;
+      S = await buildScenario(state.name, state.code, state.industry);
+      state.s3done = true; draw(); refresh();
+    };
+  };
+  draw();
+},
+4(el) {
+  const c = S.cite;
+  el.innerHTML = head(4, "get your scenario and the source you must cite.") + `
+  <p>Market research for <b>${esc(state.venture.name)}</b> (${esc(S.ind.label)}) comes from this report. Everything below is from it.</p>
+  <div class="cite">${c.refHTML}</div>
+  <div class="box yellow"><p><b>Copy this reference exactly</b> into your reference list, and cite the page number for each figure you use in your paper.</p></div>
+  <table class="facts">
+    <tr><td>Potential customers (${esc(S.ind.who)})</td><td class="v">${num(S.affected)}</td><td class="c">${pcite(S, "affected")}</td></tr>
+    <tr><td>Hours each customer loses to the problem per week</td><td class="v">${num(S.hours)}</td><td class="c">${pcite(S, "hours")}</td></tr>
+    <tr><td>Value of that time</td><td class="v">${money(S.rate)}/hour</td><td class="c">${pcite(S, "rate")}</td></tr>
+    <tr><td>Time saved by solutions like yours</td><td class="v">${S.save}%</td><td class="c">${pcite(S, "save")}</td></tr>
+    <tr><td>Typical price customers accept</td><td class="v">${money(S.price)}/month</td><td class="c">${pcite(S, "price")}</td></tr>
+    <tr><td>Realistic first-year market capture</td><td class="v">${S.capture}%</td><td class="c">${pcite(S, "capture")}</td></tr>
+  </table>
+  <p class="sub">Your company will be incorporated in <b>${esc(S.state)}</b>. You will research ${esc(S.state)}'s real requirements in Discussion Forum #1.</p>
+  <div class="ack"><label><input type="checkbox" id="citeAck"> <span>I will cite this report exactly as shown, with page numbers, wherever I use these figures.</span></label></div>
+  ${checkHTML("c4")}`;
+  $("citeAck").checked = !!state.citeAck;
+  $("citeAck").onchange = e => { state.citeAck = e.target.checked; refresh(); };
+  wireQuestions(el);
+},
+5(el) {
+  el.innerHTML = head(5, "explain the problem and why your business is needed.") + `
+  <div class="box lesson"><span class="tag">Learn</span><p><b>Quantitative</b> analysis uses numbers you can measure: costs, hours, market size. <b>Qualitative</b> analysis describes experiences, causes, and consequences. Strong problem statements use both, and every fact is cited.</p></div>
+  ${textHTML("p1", "What is the primary problem your business is attempting to solve? Why is your business needed? What are the secondary problems?")}
+  ${textHTML("p2", "What are the ramifications of these problems in the short run? In the long run?")}
+  ${textHTML("p3", "Quantitative and qualitative analysis", "Use at least one figure from your Nakamoto Reports source (with its page number) and at least one real outside source.")}
+  ${checkHTML("c5")}
+  ${gateHTML("g5", "Is my problem statement convincing and supported by evidence?")}`;
+  wireTexts(el); wireQuestions(el); wireGate("g5", "Go back and strengthen your answers above. Add evidence from real sources, then come back to this check.");
+},
+6(el) {
+  el.innerHTML = head(6, "put a dollar figure on the problem.") + `
+  <div class="box lesson"><span class="tag">Learn</span><p>Lenders and investors want to know how much a problem costs and how much value you create. A simple way: <b>time lost × value of that time</b> gives the cost per customer. Multiply by the number of customers for the size of the problem. The share of that cost your solution removes is the <b>value you create</b>; subtract your price to see the customer's <b>net benefit</b>.</p></div>
+  <div class="box example"><span class="tag">Example</span><p>2 hours/week × $40/hour × 50 weeks = <b>$4,000</b> per customer per year. With 10,000 customers: <b>$40,000,000</b> a year. A solution that saves 50% creates <b>$2,000</b> of value per customer. At $100/month ($1,200/year), the net benefit is <b>$800</b>.</p></div>
+  <p class="sub">Now use your own numbers from Section 4.</p>
+  ${NUMERIC.filter(q => q.sec === 6).map((q, i) => numericHTML(q, i === 0)).join("")}
+  ${checkHTML("c6")}`;
+  wireQuestions(el);
+},
+7(el) {
+  el.innerHTML = head(7, "turn your market into a first-year target.") + `
+  <div class="box lesson"><span class="tag">Learn</span><p>A <b>SMART</b> objective is Specific, Measurable, Achievable, Relevant, and Time-bound. "Grow fast" is not SMART. "Win 400 customers in Ohio by December 31, 2027" is. Recurring revenue shows what the target is worth: <b>MRR</b> (monthly recurring revenue) = customers × monthly price; <b>ARR</b> = MRR × 12.</p></div>
+  <div class="box example"><span class="tag">Example</span><p>20,000 potential customers × 2% = <b>400</b> customers. 400 ÷ 12 = 33.3, so <b>34</b> new customers a month. 400 × $50 = <b>$20,000</b> MRR, or <b>$240,000</b> ARR.</p></div>
+  ${NUMERIC.filter(q => q.sec === 7).map((q, i) => numericHTML(q, i === 0)).join("")}
+  ${checkHTML("c7")}`;
+  wireQuestions(el);
+},
+8(el) {
+  const q12 = NUMERIC.find(q => q.id === "q12");
+  el.innerHTML = head(8, "compare legal structures and choose one (Chapter 13).") + `
+  <div class="box lesson"><span class="tag">Learn</span>
+    <p>The legal form decides who is liable for debts, how profit is taxed, and who can invest.</p>
+    <ul><li><b>Sole proprietorship / partnership:</b> simple and cheap, but owners are personally liable.</li>
+    <li><b>LLC:</b> protects owners' personal assets; profit "passes through" and is taxed once on the owners' returns.</li>
+    <li><b>S-corporation:</b> pass-through taxation with limits on who and how many can own shares.</li>
+    <li><b>C-corporation:</b> pays corporate income tax, and owners pay tax again on dividends ("double taxation"). Preferred by most venture capital investors.</li></ul></div>
+  <div class="box example"><span class="tag">Example</span><p>$100,000 profit. C-corporation at 21% + 5% state = <b>$26,000</b>; dividends taxed 15% × $74,000 = $11,100; total <b>$37,100</b>. LLC at a 30% personal rate = <b>$30,000</b>. The LLC pays less here.</p></div>
+  <p class="sub">The rates below are planning assumptions for practice, not the actual rates in ${esc(S.state)}.</p>
+  ${NUMERIC.filter(q => q.sec === 8 && q.kind !== "choice").map((q, i) => numericHTML(q, i === 0)).join("")}
+  ${choiceHTML("q12", q12.prompt(S), q12.options, [0, 1], q12.hint, false)}
+  ${checkHTML("c8")}
+  <label for="legalChoice">Which structure will you form in ${esc(S.state)}?</label>
+  <select id="legalChoice" style="max-width:320px"><option value="">Choose…</option>${["Sole proprietorship", "General partnership", "LLC", "S-corporation", "C-corporation"].map(o => `<option>${o}</option>`).join("")}</select>
+  ${textHTML("legal", "Why?", "Use your tax numbers above and at least one other factor: liability, investors, paperwork, or cost to form.")}
+  ${gateHTML("g8", "Is my legal structure choice convincing and supported by evidence?")}`;
+  $("legalChoice").value = state.legalChoice || "";
+  $("legalChoice").onchange = e => { state.legalChoice = e.target.value; refresh(); };
+  wireQuestions(el); wireTexts(el); wireGate("g8", "Go back and strengthen your reasoning. Find a real source on this structure (for example, the IRS or your state's Secretary of State), then come back to this check.");
+},
+9(el) {
+  el.innerHTML = head(9, "download your work and submit it in Blackboard.") + `
+  <p>Download your work as an <b>Excel file</b> and upload it to the Week 1 lab assignment in Blackboard. Do not edit or re-save the file; your instructor loads it back into this page to check it.</p>
+  <div class="box yellow"><p>Your student code is <b class="mono">${state.sc}</b>. Put it under your name on the title page of your Week 1 paper.</p></div>
+  <div class="row"><button id="btnDownload">Download my work (Excel)</button><button class="ghost" id="btnLoad">Load my saved work</button><button class="ghost" id="btnReset">Clear this browser</button></div>
+  <div class="msg" id="saveMsg"></div>
+  <table class="summary" id="sumTable"></table>`;
+  $("btnDownload").onclick = doDownload;
+  $("btnLoad").onclick = () => { loadMsg = $("saveMsg"); $("fileLoad").click(); };
+  $("btnReset").onclick = () => { if (confirm("Remove your work from this browser? Download it first if you haven't.")) { try { localStorage.removeItem(STORE); } catch (e) {} location.reload(); } };
+  drawSummary();
+}
+};
+
+function drawSummary() {
+  const t = $("sumTable"); if (!t) return;
+  const wrong = ALL_IDS.reduce((s, id) => s + ((state.ans[id] || {}).wrong || []).length, 0);
+  t.innerHTML = `<tr><th>Section</th><th>Status</th></tr>` + SECTIONS.slice(0, 8).map(s => `<tr><td>${s.n}. ${esc(s.title)}</td><td>${s.done() ? "✓ Complete" : "Not finished"}</td></tr>`).join("") +
+    `<tr><td><b>Total</b></td><td><b>${ALL_IDS.filter(correct).length} of ${ALL_IDS.length} checked answers right · ${wrong} wrong tries · student code ${state.sc}</b></td></tr>`;
+}
+
+/* ---------------- Excel hand-in ---------------- */
+async function buildHandIn() {
+  const json = JSON.stringify(state);
+  const check = await sha256Hex(CONFIG.FILE_SALT + json);
+  const B = v => ({ v, s: 1 }), W = v => ({ v, s: 2 });
+  const t = ms => ms ? new Date(ms).toLocaleString() : "";
+  const mins = (a, b) => a && b ? Math.round((b - a) / 6000) / 10 : "";
+  const rows = [
+    [B(`${state.name}`)], [B("BUEN 644 · Week 1 Lab: Find a Problem")], [],
+    [B("Name"), state.name], [B("Access code"), state.code], [B("Student code"), state.sc], [B("Term"), state.term],
+    [B("Signed"), state.sig || "", t(state.sigAt)], [B("Started"), t(state.started)], [B("Saved"), t(state.saved)], [],
+    [B("Venture"), state.venture.name], [B("Industry"), S ? S.ind.label : ""], [B("Problem"), W(state.venture.problem)], [B("Who has it"), state.venture.who],
+    [B("Monetizable?"), `money/time: ${state.money.m1 || ""} · would pay: ${state.money.m2 || ""} · reachable: ${state.money.m3 || ""} · overall: ${state.money["m-verdict"] || ""}`], []
+  ];
+  if (S) rows.push([B("Nakamoto Reports citation"), W(S.cite.refText)], [B("State"), S.state], []);
+  rows.push([B("Section"), B("Opened"), B("Completed"), B("Minutes")]);
+  for (const s of SECTIONS.slice(0, 8)) { const x = state.sec[s.n] || {}; rows.push([`${s.n}. ${s.title}`, t(x.open), t(x.done), mins(x.open, x.done)]); }
+  rows.push([], [B("Item"), B("Answer"), B("Correct"), B("Wrong tries"), B("Wrong answers")]);
+  for (const id of ALL_IDS) {
+    const a = state.ans[id] || {}, chk = CHECKS.find(c => c.id === id);
+    const opts = chk ? (typeof chk.options === "function" ? (S ? chk.options(S) : []) : chk.options) : null;
+    const show = v => v == null || v === "" ? "" : (chk ? (opts[Number(v)] || "") : (isFinite(parseNum(v)) ? parseNum(v) : v));
+    rows.push([id.toUpperCase(), show(a.val), a.correct ? "Yes" : "No", (a.wrong || []).length, W((a.wrong || []).map(show).join("; "))]);
+  }
+  rows.push([], [B("Written responses")]);
+  const W_LABELS = { p1: "Primary and secondary problems", p2: "Short- and long-run ramifications", p3: "Quantitative and qualitative analysis", legal: "Legal structure: why" };
+  for (const [k, l] of Object.entries(W_LABELS)) rows.push([B(l), W(state.written[k] || "")]);
+  rows.push([B("Legal structure chosen"), state.legalChoice || ""], [], [B("Self-checks and sources"), B("Type"), B("Reference"), B("DOI / link")]);
+  for (const [g, l] of [["g5", "Problem statement"], ["g8", "Legal structure"]]) {
+    const x = state.gates[g] || { sources: [] };
+    rows.push([`${l}: ${x.ans || "not answered"}`]);
+    x.sources.forEach(s => rows.push(["", SRC_TYPES[s.type].label, W(s.ref), s.link]));
+  }
+  rows.push([], [B("Acknowledgments"), B("Agreed")]);
+  for (const a of ACKS) rows.push([W(a.text.replace(/<[^>]+>/g, "")), state.ack[a.id] ? "Yes" : "No"]);
+  rows.push([W("I will cite the Nakamoto Reports source exactly as shown, with page numbers."), state.citeAck ? "Yes" : "No"]);
+
+  const dataRows = [["Do not edit this sheet. It is used to verify the file."]];
+  const b64 = b64enc(json);
+  for (let i = 0, n = 1; i < b64.length; i += 8000, n++) dataRows.push(["data_" + n, "d:" + b64.slice(i, i + 8000)]);
+  dataRows.push(["check", "h:" + check]);
+  const x = s => enc.encode(s);
+  const NS = 'xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"';
+  return zipFiles([
+    { name: "[Content_Types].xml", data: x(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/worksheets/sheet2.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>`) },
+    { name: "_rels/.rels", data: x(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`) },
+    { name: "xl/workbook.xml", data: x(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook ${NS} xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Week 1 Lab" sheetId="1" r:id="rId1"/><sheet name="data" sheetId="2" state="hidden" r:id="rId2"/></sheets></workbook>`) },
+    { name: "xl/_rels/workbook.xml.rels", data: x(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet2.xml"/><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`) },
+    { name: "xl/styles.xml", data: x(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet ${NS}><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="3"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0" applyAlignment="1"><alignment wrapText="1" vertical="top"/></xf></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>`) },
+    { name: "xl/worksheets/sheet1.xml", data: x(sheetXML(rows, [42, 60, 24, 12, 40])) },
+    { name: "xl/worksheets/sheet2.xml", data: x(sheetXML(dataRows)) }
+  ]);
+}
 async function doDownload() {
   save();
-  downloadText(`BUEN644-Week1-${safeFile(state.name)}.csv`, await buildHandIn(state));
-  $("saveMsg").className = "msg ok";
-  $("saveMsg").textContent = "Downloaded. Upload this file to the Week 1 lab assignment in the course portal.";
-}
-async function loadFile(file, msgEl) {
-  try {
-    const { state: st, intact } = await readHandIn(await file.text());
-    if (!intact) throw new Error("This file has been changed since it was downloaded, so it cannot be loaded.");
-    if (st.term !== CONFIG.TERM) throw new Error("This file is from a different term.");
-    await startLab(st);
-  } catch (e) { msgEl.className = "msg bad"; msgEl.textContent = e.message; }
+  const blob = await buildHandIn();
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `BUEN644-Week1-${String(state.name).replace(/[^A-Za-z0-9]+/g, "-")}.xlsx`;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  $("saveMsg").className = "msg ok"; $("saveMsg").textContent = "Downloaded. Upload this Excel file to the Week 1 lab in Blackboard.";
 }
 
-function initStudent() {
-  $("startView").classList.remove("hidden");
+/* ---------------- start screen ---------------- */
+let loadMsg = null;
+async function loadFile(file) {
+  try {
+    const { state: st, intact } = await readHandIn(await file.arrayBuffer());
+    if (!intact) throw new Error("This file has been changed since it was downloaded, so it cannot be loaded.");
+    if (st.term !== CONFIG.TERM || st.lab !== "BUEN644-W1v2") throw new Error("This file is not from this term's Week 1 lab.");
+    Object.keys(rendered).forEach(k => delete rendered[k]);
+    await startLab(st);
+  } catch (e) { (loadMsg || $("startMsg")).className = "msg bad"; (loadMsg || $("startMsg")).textContent = e.message; }
+}
+(function init() {
   let saved = null;
   try { saved = JSON.parse(localStorage.getItem(STORE) || "null"); } catch (e) {}
   if (saved && saved.term === CONFIG.TERM && saved.name) {
@@ -501,30 +829,17 @@ function initStudent() {
     $("btnResume").onclick = () => startLab(saved);
   }
   $("btnStart").onclick = async () => {
-    const name = $("inName").value.trim().replace(/\s+/g, " ");
-    const code = normCode($("inCode").value);
-    const idea = $("inIdea").value.trim();
-    const m = $("startMsg"); m.className = "msg bad";
-    if (name.split(" ").length < 2) return m.textContent = "Enter your full name (first and last), exactly as it appears in the course roster.";
-    if (!code) return m.textContent = "Enter the access code your instructor sent you.";
-    if (idea.length < 10) return m.textContent = "Describe your business idea in one sentence.";
-    if (!confirm(`Start as "${name}" with code ${$("inCode").value.trim()}?\n\nYour name and code create your scenario. They must match exactly every week.`)) return;
-    await startLab({ v: 1, lab: "BUEN644-W1", term: CONFIG.TERM, name, code: $("inCode").value.trim(), idea, started: Date.now(), saved: Date.now(), ans: {}, written: {} });
+    const name = $("inName").value.trim().replace(/\s+/g, " "), code = $("inCode").value.trim(), m = $("startMsg");
+    m.className = "msg bad";
+    if (name.split(" ").length < 2) return m.textContent = "Enter your full name (first and last), exactly as it appears in Blackboard.";
+    if (!normCode(code)) return m.textContent = "Enter the access code your instructor sent you.";
+    if (!confirm(`Start as "${name}" with code ${code}?\n\nYour name and code create your scenario. They must match exactly every week.`)) return;
+    await startLab({ v: 2, lab: "BUEN644-W1v2", term: CONFIG.TERM, name, code, started: Date.now(), saved: Date.now(),
+      ack: {}, sig: "", venture: {}, money: {}, written: {}, gates: {}, ans: {}, sec: {} });
   };
-  let loadMsg = $("startMsg");
   $("btnLoadStart").onclick = () => { loadMsg = $("startMsg"); $("fileLoad").click(); };
-  $("btnLoad").onclick = () => { loadMsg = $("saveMsg"); $("fileLoad").click(); };
-  $("fileLoad").onchange = e => { const f = e.target.files[0]; e.target.value = ""; if (f) loadFile(f, loadMsg); };
-  $("btnDownload").onclick = doDownload;
-  $("btnPrint").onclick = () => window.print();
-  $("btnReset").onclick = () => {
-    if (!confirm("Remove your work from this browser? Download it first if you haven't. Your downloaded file is not affected.")) return;
-    try { localStorage.removeItem(STORE); } catch (e) {}
-    location.reload();
-  };
-}
-
-initStudent();
+  $("fileLoad").onchange = e => { const f = e.target.files[0]; e.target.value = ""; if (f) loadFile(f); };
+})();
 </script>
 </body>
 </html>
