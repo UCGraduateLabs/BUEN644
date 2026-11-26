@@ -440,7 +440,7 @@ const CHECKQ = {
   s1: { q: "Do you know where to find the syllabus, the AI guidelines, and the Academic Dishonesty Policy in Blackboard?", no: "They are in Blackboard under <b>Syllabus</b> or in the <b>Start Here</b> folder. Take a minute to find them, then come back." },
   s2: { q: "Could someone who knows nothing about your business understand the problem from your one sentence?", no: "Rewrite the sentence above so it says plainly what is broken or missing, and for whom." },
   s3: { q: "Can your problem be monetized well enough to build a business plan around it?", no: "That's what Week 1 is for: better to find out now. Go back and rethink your problem or your customer." },
-  s4: { q: "Have you copied your Nakamoto Reports reference and figures into your notes, exactly as shown?", no: "Copy the reference and the table above into your notes now. You will need them for your paper." },
+  s4: { q: "Do you know how to cite this report and its figures in your Week 2 paper?", no: () => `Put the full reference in your reference list exactly as shown. In your writing, cite each figure with the authors, year, and page number, for example ${pcite(S, "affected")}. Your reference and figures are also saved in your Excel file.` },
   g5: { q: "Is my problem statement convincing and supported by evidence?", no: "Go back and strengthen your notes above. Add evidence from real sources, then come back to this check.", sources: true },
   s6: { q: "Do these numbers make sense for your business? Would a customer see enough value to pay your price?", no: "Look again at Q4. If the net benefit is small or negative, note how you would change the price or the value you create. You will address it in your paper." },
   s7: { q: "Is your year-one target realistic for a new business with your resources?", no: "Note what would make the target more realistic: a smaller share, a longer timeline, or a narrower market. You will address it in your paper." },
@@ -454,12 +454,31 @@ const SECTIONS = [
   { n: 2, title: "Your venture", done: () => !!state.s2done },
   { n: 3, title: "Can the problem make money?", done: () => !!state.s3done },
   { n: 4, title: "Your scenario", done: () => checkYes("s4") },
-  { n: 5, title: "The problem in your own words", done: () => ["p1", "p2", "p3"].every(k => words(state.written[k]) >= MINWORDS) && checkYes("g5") && SRC_ACKS.every(a => state.ack[a]) },
+  { n: 5, title: "The problem in your own words", done: () => ["p1", "p2", "p3"].every(k => words(state.written[k]) >= MINWORDS) && checkYes("g5") && SRC_ACKS.every(a => state.ack[a]) && aiOK(5) },
   { n: 6, title: "Size the problem", done: () => ["q1", "q2", "q3", "q4"].every(correct) && checkYes("s6") },
   { n: 7, title: "Set a SMART target", done: () => ["q5", "q6", "q7", "q8"].every(correct) && checkYes("s7") },
-  { n: 8, title: "Choose a legal structure", done: () => ["q9", "q10", "q11", "q12"].every(correct) && !!state.legalChoice && words(state.written.legal) >= MINWORDS && checkYes("g8") },
+  { n: 8, title: "Choose a legal structure", done: () => ["q9", "q10", "q11", "q12"].every(correct) && !!state.legalChoice && words(state.written.legal) >= MINWORDS && checkYes("g8") && aiOK(8) },
   { n: 9, title: "Sign and hand in", done: () => FIN_ACKS.every(a => state.ack[a]) && sigOK() }
 ];
+const AI_OPTS = ["None", "Spelling and grammar only", "Brainstorming or outlining", "Text or information"];
+const aiOK = sec => { const a = (state.ai || {})[sec]; if (!a || !a.use) return false; if (a.use === AI_OPTS[0] || a.use === AI_OPTS[1]) return true; return (a.tool || "").trim().length >= 2 && words(a.how) >= 3; };
+function aiHTML(sec) {
+  return `<div class="gate" id="ai-${sec}"><h3 style="margin-top:0">AI use in this section</h3><p>Did you use AI for this section?</p>
+    <div class="opts">${AI_OPTS.map(o => `<label><input type="radio" name="ai${sec}" value="${o}"> ${o}</label>`).join("")}</div>
+    <div id="ai${sec}-more" class="hidden">
+      <p class="sub" style="margin-top:8px">The University's AI guidelines require you to cite this use. Say which tool you used and what you used it for, and cite it in your paper.</p>
+      <label>Which AI tool?</label><input type="text" data-ai="tool" placeholder="e.g., ChatGPT, Claude, Copilot">
+      <label>What did you use it for?</label><textarea style="min-height:60px" data-ai="how"></textarea></div></div>`;
+}
+function wireAI(sec) {
+  state.ai = state.ai || {};
+  const a = state.ai[sec] || (state.ai[sec] = { use: "", tool: "", how: "" });
+  const box = $("ai-" + sec), more = $(`ai${sec}-more`);
+  const show = () => more.classList.toggle("hidden", !(a.use === AI_OPTS[2] || a.use === AI_OPTS[3]));
+  box.querySelectorAll(`input[name=ai${sec}]`).forEach(r => { r.checked = r.value === a.use; r.onchange = () => { a.use = r.value; a.at = Date.now(); show(); refresh(); }; });
+  box.querySelectorAll("[data-ai]").forEach(f => { f.value = a[f.dataset.ai] || ""; f.addEventListener("input", () => { a[f.dataset.ai] = f.value; refresh(); }); });
+  show();
+}
 const correct = id => !!(state.ans[id] && state.ans[id].correct);
 const sigOK = () => !!state.sig && normName(state.sig) === normName(state.name);
 const unlocked = n => n === 1 || SECTIONS[n - 2].done();
@@ -485,7 +504,7 @@ function refresh() {
     el.classList.toggle("locked", !open);
     if (open && !rendered[s.n]) {
       if (!state.sec[s.n]) state.sec[s.n] = { open: Date.now() };
-      RENDER[s.n](el); rendered[s.n] = true;
+      renderSection(s.n); rendered[s.n] = true;
     }
     const isDone = s.done();
     el.classList.toggle("complete", isDone);
@@ -495,6 +514,14 @@ function refresh() {
   $("progressText").textContent = `${doneCount} of ${SECTIONS.length} sections complete · ${ALL_IDS.filter(correct).length}/${ALL_IDS.length} math answers correct`;
   drawSummary();
   save();
+}
+function renderSection(n) {
+  const el = $("sec" + n);
+  RENDER[n](el);
+  if (n < 9) {
+    el.insertAdjacentHTML("beforeend", `<div class="row noprint" style="margin-top:18px;justify-content:flex-end"><button class="ghost savebtn">Save my progress (Excel)</button></div>`);
+    el.querySelector(".savebtn").onclick = doDownload;
+  }
 }
 function head(n, goal) { return `<div class="secnum">Section ${n}</div><h2>${esc(SECTIONS[n - 1].title)}<span class="done-badge">✓ Complete</span></h2><p class="goal">Goal: ${goal}</p>`; }
 
@@ -566,7 +593,7 @@ function wireCheck(k, onYesExtra) {
 }
 function drawCheck(k, onYesExtra) {
   const st = state.gates[k], body = $(k + "-body");
-  if (st.ans === "no") { body.innerHTML = `<div class="box example"><p>${CHECKQ[k].no}</p></div>`; return; }
+  if (st.ans === "no") { const no = CHECKQ[k].no; body.innerHTML = `<div class="box example"><p>${typeof no === "function" ? no() : no}</p></div>`; return; }
   if (st.ans !== "yes") { body.innerHTML = ""; return; }
   if (!CHECKQ[k].sources) { body.innerHTML = ""; if (onYesExtra) onYesExtra(body); return; }
   if (!st.sources.length) st.sources.push({ type: "journal", ref: "", link: "" });
@@ -602,7 +629,7 @@ const RENDER = {
   el.innerHTML = head(1, "get your bearings before you start.") + `
   <div class="box lesson"><span class="tag">Welcome</span>
     <p>Welcome to the Week 1 lab. Over the next eight weeks you will build a complete business plan, one piece at a time. Each weekly lab walks you through the thinking and the math for that week's part of the plan, using a scenario created just for you.</p>
-    <p>Sections open one at a time as you finish each one. Your work is kept in this browser as you go, and you can download it as an Excel file at any time with the button at the top of the page, then load it again later to pick up where you left off.</p>
+    <p>Sections open one at a time as you finish each one. Your work is kept in this browser as you go, and you can save it as an Excel file at any time with <b>Download my work</b> at the top of the page or <b>Save my progress</b> at the end of each section. Load that file later to pick up exactly where you left off.</p>
     <p>The syllabus, the University's <i>Student Guidelines for the Use of AI</i>, and the Academic Dishonesty Policy are in Blackboard under <b>Syllabus</b> or in the <b>Start Here</b> folder. If you have questions at any point, email your instructor.</p></div>
   ${checkHTML("s1")}`;
   wireCheck("s1");
@@ -659,7 +686,7 @@ const RENDER = {
     const g = state.gates.s3 || {};
     if (g.ans === "no") {
       b.innerHTML = `<button class="ghost" id="s3back">Change my venture in Section 2</button>`;
-      $("s3back").onclick = () => { state.s2done = false; delete state.gates.s3; rendered[2] = false; RENDER[2]($("sec2")); rendered[2] = true; RENDER[3]($("sec3")); refresh(); $("sec2").scrollIntoView({ behavior: "smooth" }); };
+      $("s3back").onclick = () => { state.s2done = false; delete state.gates.s3; renderSection(2); rendered[2] = true; renderSection(3); refresh(); $("sec2").scrollIntoView({ behavior: "smooth" }); };
       return;
     }
     const ready = ["m1", "m2", "m3"].every(k => M[k]) && (!anyNo() || words(state.written.mfix) >= MINWORDS) && g.ans === "yes";
@@ -679,7 +706,8 @@ const RENDER = {
   el.innerHTML = head(4, "get your scenario and the source you will cite.") + `
   <p>Market research for <b>${esc(state.venture.name)}</b> (${esc(S.ind.label)}) comes from this report. Everything in the table is from it.</p>
   <div class="cite">${S.cite.refHTML}</div>
-  <div class="box yellow"><p><b>Copy this reference exactly</b> into your reference list, and cite the page number for each figure you use.</p></div>
+  <div class="row"><button class="ghost" id="btnCopyRef">Copy reference</button><span class="msg" id="copyMsg" style="margin:0"></span></div>
+  <div class="box yellow"><p><b>Copy this reference exactly</b> into the reference list of your <b>Week 2 paper</b> and, later, your <b>final business plan</b>. Whenever you use one of these figures in a paper, cite it with its page number, for example <b>${pcite(S, "affected")}</b>.</p></div>
   <table class="facts">
     <tr><td>Potential customers (${esc(S.ind.who)})</td><td class="v">${num(S.affected)}</td><td class="c">${pcite(S, "affected")}</td></tr>
     <tr><td>Hours each customer loses to the problem per week</td><td class="v">${num(S.hours)}</td><td class="c">${pcite(S, "hours")}</td></tr>
@@ -691,6 +719,16 @@ const RENDER = {
   <p class="sub">Your company will be incorporated in <b>${esc(S.state)}</b>. You will research ${esc(S.state)}'s real requirements in Discussion Forum #1.</p>
   ${checkHTML("s4")}`;
   wireCheck("s4");
+  $("btnCopyRef").onclick = async () => {
+    const m = $("copyMsg");
+    try {
+      await navigator.clipboard.write([new ClipboardItem({ "text/html": new Blob([S.cite.refHTML], { type: "text/html" }), "text/plain": new Blob([S.cite.refText], { type: "text/plain" }) })]);
+      m.className = "msg ok"; m.textContent = "✓ Copied. Paste it into Word; the title stays in italics.";
+    } catch (e) {
+      try { await navigator.clipboard.writeText(S.cite.refText); m.className = "msg ok"; m.textContent = "✓ Copied. Italicize the report title when you paste it."; }
+      catch (e2) { m.className = "msg bad"; m.textContent = "Your browser blocked copying. Select the reference above and copy it."; }
+    }
+  };
 },
 5(el) {
   el.innerHTML = head(5, "explain the problem and why your business is needed.") + `
@@ -707,8 +745,9 @@ const RENDER = {
   <div class="box lesson" style="margin-top:18px"><span class="tag">About your sources</span>
     <p>The sources you listed here are a start. Your paper, and any single section of it, may need more sources to fully support your claims.</p>
     <p>APA 7 requires a DOI for every journal article that has one, and a working link for online sources such as government data, company filings, and reports. Every DOI and link must lead to the exact source you cite, and the author, year, title, and publication must match that source exactly.</p></div>
-  ${ackHTML(SRC_ACKS)}`;
-  wireTexts(el); wireCheck("g5"); wireAcks(el);
+  ${ackHTML(SRC_ACKS)}
+  ${aiHTML(5)}`;
+  wireTexts(el); wireCheck("g5"); wireAcks(el); wireAI(5);
 },
 6(el) {
   el.innerHTML = head(6, "put a dollar figure on the problem.") + `
@@ -742,20 +781,15 @@ const RENDER = {
   <label for="legalChoice">Which structure will you form in ${esc(S.state)}?</label>
   <select id="legalChoice" style="max-width:320px"><option value="">Choose…</option>${["Sole proprietorship", "General partnership", "LLC", "S-corporation", "C-corporation"].map(o => `<option>${o}</option>`).join("")}</select>
   ${textHTML("legal", "Why?", "Use your tax numbers above and at least one other factor: liability, investors, paperwork, or cost to form.")}
-  ${checkHTML("g8")}`;
+  ${checkHTML("g8")}
+  ${aiHTML(8)}`;
   $("legalChoice").value = state.legalChoice || "";
   $("legalChoice").onchange = e => { state.legalChoice = e.target.value; refresh(); };
-  wireQuestions(el); wireTexts(el); wireCheck("g8");
+  wireQuestions(el); wireTexts(el); wireCheck("g8"); wireAI(8);
 },
 9(el) {
   el.innerHTML = head(9, "sign your lab and submit it in Blackboard.") + `
-  <div class="policy"><b>Academic Dishonesty Policy</b>
-    <p>As a Christian liberal arts university committed to the pursuit of truth and understanding, any act of academic dishonesty is especially distressing and cannot be tolerated. In general, academic dishonesty involves the abuse and misuse of information or people to gain an undeserved academic advantage or evaluation. The common forms of academic dishonesty include:</p>
-    <ol><li><b>cheating</b> – using deception in the taking of tests or the preparation of written work, using unauthorized materials, copying another person's work with or without consent, or assisting another in such activities;</li>
-    <li><b>lying</b> – falsifying, fabricating, or forging information in either written or spoken presentations;</li>
-    <li><b>plagiarism</b> – using the published writings, data, interpretations, or ideas of another without proper documentation;</li>
-    <li><b>multiple submissions</b> – submitting the same academic written or oral work for which credit was previously received, without the approval of the instructor.</li></ol>
-    <p>Episodes of academic dishonesty are reported as appropriate to the Vice President for Academic Affairs. The potential penalty for academic dishonesty includes 1) a failing grade on a particular assignment, 2) a failing grade for the entire course, 3) suspension or expulsion, or (4) revocation of a degree.</p></div>
+  <div class="box lesson"><span class="tag">Academic integrity</span><p>This course follows the University's Academic Dishonesty Policy, which covers cheating, lying (including fabricated sources or data), plagiarism, and multiple submissions. Penalties range from a failing grade on the assignment to a failing grade for the course, suspension or expulsion, or revocation of a degree. The full policy is in Blackboard under <b>Syllabus</b> or the <b>Start Here</b> folder.</p></div>
   ${ackHTML(FIN_ACKS)}
   <label for="inSig">Type your full name to sign</label>
   <input type="text" id="inSig" style="max-width:360px"><div class="msg" id="sigMsg"></div>
@@ -815,6 +849,8 @@ async function buildHandIn() {
     rows.push([`${l}: ${x.ans || "not answered"}`]);
     x.sources.forEach(s => rows.push(["", SRC_TYPES[s.type].label, W(s.ref), s.link]));
   }
+  rows.push([], [B("AI use"), B("Answer"), B("Tool"), B("What for")]);
+  for (const sec of [5, 8]) { const a = (state.ai || {})[sec] || {}; rows.push([`Section ${sec}`, a.use || "not answered", a.tool || "", W(a.how || "")]); }
   rows.push([], [B("Acknowledgments"), B("Agreed"), B("When")]);
   for (const k of [...SRC_ACKS, ...FIN_ACKS]) rows.push([W(ACKS[k]), state.ack[k] ? "Yes" : "No", t(state.ackAt[k])]);
 
