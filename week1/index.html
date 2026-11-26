@@ -60,14 +60,6 @@
   .progress { position: sticky; top: 0; z-index: 5; background: var(--ink); color: #fff; font-size: .88rem; padding: 8px 20px; }
   .progress .wrap { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
   .hidden { display: none !important; }
-  table { width: 100%; border-collapse: collapse; font-size: .88rem; }
-  th, td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
-  th { background: #f0f3f6; }
-  td.ok { color: var(--ok); font-weight: 600; } td.bad { color: var(--bad); font-weight: 600; }
-  details { margin: 6px 0; } summary { cursor: pointer; color: var(--accent); font-weight: 600; }
-  .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
-  .written-out { white-space: pre-wrap; background: #fbfcfd; border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; margin: 4px 0 10px; }
-  .scroll { overflow-x: auto; }
   @media print { .progress, button, .noprint { display: none !important; } }
 </style>
 </head>
@@ -77,8 +69,8 @@
   <div class="wrap">
     <a href="../">← All labs</a>
     <div class="code" style="margin-top:10px">BUEN 644 · Week 1 Lab</div>
-    <h1 id="pageTitle">Find a Problem</h1>
-    <p id="pageSub">Size the problem, set a SMART target, and choose a legal structure using your own scenario.</p>
+    <h1>Find a Problem</h1>
+    <p>Size the problem, set a SMART target, and choose a legal structure using your own scenario.</p>
   </div>
 </header>
 
@@ -92,7 +84,6 @@
 <main>
 <div class="wrap">
 
-<!-- ================= STUDENT: START ================= -->
 <section id="startView" class="hidden">
   <div class="card">
     <h2>Start your lab</h2>
@@ -100,7 +91,7 @@
     <label for="inName">Full name</label>
     <input type="text" id="inName" autocomplete="name">
     <label for="inCode">Access code</label>
-    <input type="text" id="inCode" placeholder="XXXX-XXXX" autocomplete="off" style="max-width:220px; text-transform:uppercase">
+    <input type="text" id="inCode" autocomplete="off" style="max-width:260px">
     <label for="inIdea">Your business idea in one sentence</label>
     <input type="text" id="inIdea" placeholder="e.g., A scheduling app that cuts no-shows for independent dental offices">
     <div class="row" style="margin-top:16px">
@@ -113,9 +104,7 @@
   <div class="note blue">This lab runs entirely in your browser. Nothing you type is sent anywhere. Your work is kept in this browser as you go, but always download your work before you leave.</div>
 </section>
 
-<!-- ================= STUDENT: LAB ================= -->
 <section id="labView" class="hidden">
-
   <div class="card">
     <h2>Your scenario</h2>
     <p class="sub">These are the planning assumptions for your venture. They are unique to you. In your paper, test them against real research and cite real sources for any market facts.</p>
@@ -138,7 +127,7 @@
 
   <div class="card noprint">
     <h2>Save and hand in</h2>
-    <p class="sub">Download your work to save it or to hand it in. Upload the downloaded <strong>.csv</strong> file to the Week 1 lab assignment in the course portal. Do not edit the file; your instructor reloads it to check every answer against your scenario.</p>
+    <p class="sub">Download your work to save it or to hand it in. Upload the downloaded <strong>.csv</strong> file to the Week 1 lab assignment in the course portal. Do not edit the file.</p>
     <div class="row">
       <button id="btnDownload">Download my work</button>
       <button class="ghost" id="btnLoad">Load my saved work</button>
@@ -149,117 +138,32 @@
   </div>
 </section>
 
-<!-- ================= INSTRUCTOR ================= -->
-<section id="instView" class="hidden">
-  <div class="card">
-    <h2>Instructor mode</h2>
-    <p class="sub">Enter your course key. It is never stored or sent anywhere. Everything below is computed in this browser from the key.</p>
-    <label for="inKey">Course key</label>
-    <div class="row">
-      <input type="password" id="inKey" style="max-width:340px" autocomplete="off">
-      <button id="btnKey">Unlock</button>
-    </div>
-    <div class="msg" id="keyMsg"></div>
-  </div>
-
-  <div id="instTools" class="hidden">
-    <div class="card">
-      <h2>1 · Generate access codes</h2>
-      <p class="sub">Paste your roster, one full name per line, exactly as students will type it. Send each student only their own code through the course portal. Do not save this list to GitHub.</p>
-      <textarea id="inRoster" placeholder="Jane Doe&#10;John Smith"></textarea>
-      <div class="row" style="margin-top:10px">
-        <button id="btnCodes">Generate codes</button>
-        <button class="ghost hidden" id="btnCodesCsv">Download codes (.csv)</button>
-      </div>
-      <div class="scroll" id="codesOut" style="margin-top:12px"></div>
-    </div>
-
-    <div class="card">
-      <h2>2 · Answer key for one student</h2>
-      <label for="inKeyName">Student full name</label>
-      <div class="row">
-        <input type="text" id="inKeyName" style="max-width:340px">
-        <button id="btnAnswerKey">Show answer key</button>
-      </div>
-      <div id="answerKeyOut" style="margin-top:12px"></div>
-    </div>
-
-    <div class="card">
-      <h2>3 · Check submissions</h2>
-      <p class="sub">Select one or more downloaded student files. Each answer is re-checked against the scenario that student's name and code should produce. Edits to the visible cells in the file are ignored, and any change to the hidden data is flagged.</p>
-      <input type="file" id="inSubs" accept=".csv,text/csv" multiple>
-      <div class="row" style="margin-top:10px">
-        <button class="ghost hidden" id="btnGradesCsv">Download results (.csv)</button>
-      </div>
-      <div class="scroll" id="subsOut" style="margin-top:12px"></div>
-    </div>
-  </div>
-</section>
-
 <input type="file" id="fileLoad" accept=".csv,text/csv" class="hidden">
 </div>
 </main>
 
-<!-- ============================================================
-     CORE: scenario generation and answer checking.
-     Shared by student mode and instructor mode.
-     ============================================================ -->
-<script id="core">
+<script>
 const CONFIG = {
-  COURSE: "BUEN644",
-  TERM: "2026FA-B2",        // change every term; old scenarios and codes stop matching
-  WEEK: 1,
-  POINTS: 25,
-  // Paste the "key check" value shown in instructor mode here so a mistyped key is caught.
-  KEY_CHECK: "",
+  TERM: "2026FA-B2",        // change every term; old scenarios stop matching
   FILE_SALT: "buen644-w1-file-v1"
 };
 
-const ALPH = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // no I, O, 0, 1
 const STATES = ["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"];
 
 const enc = new TextEncoder();
 function toHex(buf) { return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join(""); }
 async function sha256Hex(s) { return toHex(await crypto.subtle.digest("SHA-256", enc.encode(s))); }
-async function hmacBytes(key, msg) {
-  const k = await crypto.subtle.importKey("raw", enc.encode(key), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
-  return new Uint8Array(await crypto.subtle.sign("HMAC", k, enc.encode(msg)));
-}
 function normName(s) { return String(s || "").normalize("NFKC").trim().replace(/\s+/g, " ").toLowerCase(); }
-
-function checkChar(seven) {
-  let sum = 0;
-  for (let i = 0; i < seven.length; i++) sum += (i + 1) * ALPH.indexOf(seven[i]);
-  return ALPH[sum % 32];
-}
 function normCode(s) {
-  const c = String(s || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
-  if (c.length !== 8 || [...c].some(ch => !ALPH.includes(ch))) return null;
-  return c.slice(0, 4) + "-" + c.slice(4);
+  const c = String(s || "").normalize("NFKC").toUpperCase().replace(/[^A-Z0-9]/g, "");
+  return c.length ? c : null;
 }
-function codeLooksValid(s) {
-  const c = normCode(s); if (!c) return false;
-  const raw = c.replace("-", "");
-  return checkChar(raw.slice(0, 7)) === raw[7];
-}
-async function makeCode(courseKey, name) {
-  const b = await hmacBytes(courseKey, CONFIG.TERM + "|" + normName(name));
-  let s = ""; for (let i = 0; i < 7; i++) s += ALPH[b[i] % 32];
-  s += checkChar(s);
-  return s.slice(0, 4) + "-" + s.slice(4);
-}
-async function keyCheckValue(courseKey) {
-  const base = await crypto.subtle.importKey("raw", enc.encode(courseKey), "PBKDF2", false, ["deriveBits"]);
-  const bits = await crypto.subtle.deriveBits({ name: "PBKDF2", salt: enc.encode("buen644-keycheck"), iterations: 200000, hash: "SHA-256" }, base, 256);
-  return toHex(bits).slice(0, 16);
-}
-
 async function rnd(seed, field, n) {
   const h = await sha256Hex(seed + ":" + field);
   return parseInt(h.slice(0, 12), 16) % n;
 }
 
-/* ---------- scenario ---------- */
+/* ---------- scenario: SHA-256 of term + name + access code ---------- */
 async function buildScenario(name, code) {
   const nn = normName(name), cc = normCode(code);
   const company = await sha256Hex(["CO", CONFIG.TERM, nn, cc].join("|"));  // fixed all term
@@ -291,23 +195,14 @@ async function buildScenario(name, code) {
   const q3 = q1 * S.save / 100;
   const cust = S.affected * S.capture / 100;
   S.expected = {
-    q1: q1,
-    q2: q1 * S.affected,
-    q3: q3,
-    q4: q3 - 12 * S.price,
-    q5: cust,
-    q6: Math.ceil(cust / 12),
-    q7: cust * S.price,
-    q8: cust * S.price * 12,
-    q9: corp,
-    q10: cTotal,
-    q11: llc,
-    q12: llc < cTotal ? "LLC" : "C-corp"
+    q1: q1, q2: q1 * S.affected, q3: q3, q4: q3 - 12 * S.price,
+    q5: cust, q6: Math.ceil(cust / 12), q7: cust * S.price, q8: cust * S.price * 12,
+    q9: corp, q10: cTotal, q11: llc, q12: llc < cTotal ? "LLC" : "C-corp"
   };
   return S;
 }
 
-/* ---------- question bank ---------- */
+/* ---------- questions ---------- */
 const money = v => (v < 0 ? "−$" : "$") + Math.abs(v).toLocaleString("en-US", { minimumFractionDigits: Number.isInteger(Math.round(v * 100) / 100) ? 0 : 2, maximumFractionDigits: 2 });
 const num = v => v.toLocaleString("en-US", { maximumFractionDigits: 2 });
 
@@ -392,10 +287,7 @@ function parseNum(s) {
   return Number(t);
 }
 function isCorrect(S, id, value) {
-  if (id.startsWith("a")) {
-    const q = APA.find(x => x.id === id);
-    return String(value) === String(q.correct);
-  }
+  if (id.startsWith("a")) return String(value) === String(APA.find(x => x.id === id).correct);
   const exp = S.expected[id];
   if (typeof exp === "string") return String(value) === exp;
   const v = parseNum(value);
@@ -404,12 +296,12 @@ function isCorrect(S, id, value) {
   return Math.abs(v - exp) <= tol;
 }
 
-/* ---------- hand-in file (CSV) ---------- */
+/* ---------- save file (CSV) ---------- */
 function b64enc(str) { let s = ""; for (const x of enc.encode(str)) s += String.fromCharCode(x); return btoa(s); }
 function b64dec(b64) { const bin = atob(b64); const u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return new TextDecoder().decode(u); }
 function csvCell(v, safe) {
   let s = String(v == null ? "" : v);
-  if (safe && /^[=+\-@\t\r]/.test(s)) s = "'" + s;   // block spreadsheet formula injection
+  if (safe && /^[=+\-@\t\r]/.test(s)) s = "'" + s;
   return '"' + s.replace(/"/g, '""') + '"';
 }
 function parseCSV(text) {
@@ -429,7 +321,7 @@ function parseCSV(text) {
   if (cell !== "" || row.length) { row.push(cell); rows.push(row); }
   return rows;
 }
-async function buildHandIn(state, S) {
+async function buildHandIn(state) {
   const json = JSON.stringify(state);
   const check = await sha256Hex(CONFIG.FILE_SALT + json);
   const rows = [["Field", "Value"],
@@ -445,11 +337,11 @@ async function buildHandIn(state, S) {
   }
   rows.push(["", ""]);
   for (const w of WRITTEN) rows.push([w.label, state.written[w.id] || ""]);
-  rows.push(["", ""], ["Do not edit below this line", "Your instructor uses this data to verify the file."]);
+  rows.push(["", ""], ["Do not edit below this line", "Used to verify the file."]);
   const b64 = b64enc(json);
   for (let i = 0, n = 1; i < b64.length; i += 8000, n++) rows.push(["data_" + n, "d:" + b64.slice(i, i + 8000)]);
   rows.push(["check", "h:" + check]);
-  return rows.map(r => r.map((v, j) => csvCell(v, !(r[0].startsWith("data_") || r[0] === "check"))).join(",")).join("\r\n");
+  return rows.map(r => r.map(v => csvCell(v, !(r[0].startsWith("data_") || r[0] === "check"))).join(",")).join("\r\n");
 }
 async function readHandIn(text) {
   const rows = parseCSV(text.replace(/^\uFEFF/, ""));
@@ -465,12 +357,8 @@ async function readHandIn(text) {
   const intact = (await sha256Hex(CONFIG.FILE_SALT + json)) === check;
   return { state, intact };
 }
-</script>
 
-<!-- ============================================================
-     UI
-     ============================================================ -->
-<script>
+/* ---------- page ---------- */
 const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const STORE = "buen644-w1-" + CONFIG.TERM;
@@ -479,7 +367,7 @@ let state = null, S = null;
 function save() {
   if (!state) return;
   state.saved = Date.now();
-  try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) { /* storage unavailable; download still works */ }
+  try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) {}
 }
 function downloadText(filename, text) {
   const blob = new Blob(["\uFEFF" + text], { type: "text/csv;charset=utf-8" });
@@ -490,7 +378,6 @@ function downloadText(filename, text) {
 }
 function safeFile(s) { return String(s).replace(/[^A-Za-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
 
-/* ---------------- STUDENT ---------------- */
 async function startLab(fromState) {
   state = fromState;
   S = await buildScenario(state.name, state.code);
@@ -523,7 +410,7 @@ function renderLab() {
   $("writtenOut").innerHTML = WRITTEN.map(w => `
     <label for="${w.id}">${esc(w.label)}</label>
     <p class="sub" style="margin:0 0 6px">${esc(w.help)}</p>
-    <textarea id="${w.id}" data-w="${w.id}"></textarea>`).join("");
+    <textarea id="${w.id}"></textarea>`).join("");
   for (const w of WRITTEN) {
     const t = $(w.id); t.value = state.written[w.id] || "";
     t.addEventListener("input", () => { state.written[w.id] = t.value; save(); updateProgress(); });
@@ -541,7 +428,7 @@ function renderLab() {
 function numericHTML(q) {
   return `<div class="q" id="box-${q.id}">
     <p class="prompt"><b>${q.id.toUpperCase()}.</b> ${q.prompt(S)}</p>
-    <div class="ans"><input type="text" inputmode="decimal" data-num="${q.id}" placeholder="${q.kind === "money" ? "$" : "number"}" aria-label="Answer ${q.id}">
+    <div class="ans"><input type="text" inputmode="decimal" data-num="${q.id}" placeholder="${q.kind === "money" ? "$" : "number"}">
     <span class="status"></span><span class="tries"></span></div>
     <div class="hint"><b>Not quite.</b> ${q.hint(S)}</div></div>`;
 }
@@ -553,19 +440,16 @@ function choiceHTML(q) {
     <div class="hint"><b>Not quite.</b> ${q.hint(S)}</div></div>`;
 }
 function apaHTML(q) {
-  const order = S.optOrder[q.id];
   return `<div class="q" id="box-${q.id}">
     <p class="prompt"><b>${q.id.toUpperCase()}.</b> ${esc(q.prompt)}</p>
-    <div class="opts">${order.map(i => `<label><input type="radio" name="${q.id}" value="${i}" data-choice="${q.id}"> ${esc(q.options[i])}</label>`).join("")}</div>
+    <div class="opts">${S.optOrder[q.id].map(i => `<label><input type="radio" name="${q.id}" value="${i}" data-choice="${q.id}"> ${esc(q.options[i])}</label>`).join("")}</div>
     <div class="ans"><span class="status"></span><span class="tries"></span></div>
     <div class="hint"><b>Not quite.</b> ${esc(q.hint)}</div></div>`;
 }
 
 function answer(id, value) {
   const a = state.ans[id] || (state.ans[id] = { val: null, correct: false, wrong: [] });
-  if (a.correct) return;
-  if (String(value).trim() === "") return;
-  if (a.val === value) return;               // same answer again does not count twice
+  if (a.correct || String(value).trim() === "" || a.val === value) return;
   a.val = value;
   if (isCorrect(S, id, value)) { a.correct = true; a.firstTry = a.wrong.length === 0; }
   else a.wrong.push(value);
@@ -594,8 +478,7 @@ function updateProgress() {
 
 async function doDownload() {
   save();
-  const text = await buildHandIn(state, S);
-  downloadText(`BUEN644-Week1-${safeFile(state.name)}.csv`, text);
+  downloadText(`BUEN644-Week1-${safeFile(state.name)}.csv`, await buildHandIn(state));
   $("saveMsg").className = "msg ok";
   $("saveMsg").textContent = "Downloaded. Upload this file to the Week 1 lab assignment in the course portal.";
 }
@@ -623,10 +506,10 @@ function initStudent() {
     const idea = $("inIdea").value.trim();
     const m = $("startMsg"); m.className = "msg bad";
     if (name.split(" ").length < 2) return m.textContent = "Enter your full name (first and last), exactly as it appears in the course roster.";
-    if (!code || !codeLooksValid(code)) return m.textContent = "That access code doesn't look right. Check it for typos; codes look like ABCD-2345.";
+    if (!code) return m.textContent = "Enter the access code your instructor sent you.";
     if (idea.length < 10) return m.textContent = "Describe your business idea in one sentence.";
-    if (!confirm(`Start as "${name}" with code ${code}?\n\nYour name and code create your scenario. They must match exactly every week.`)) return;
-    await startLab({ v: 1, lab: "BUEN644-W1", term: CONFIG.TERM, name, code, idea, started: Date.now(), saved: Date.now(), ans: {}, written: {} });
+    if (!confirm(`Start as "${name}" with code ${$("inCode").value.trim()}?\n\nYour name and code create your scenario. They must match exactly every week.`)) return;
+    await startLab({ v: 1, lab: "BUEN644-W1", term: CONFIG.TERM, name, code: $("inCode").value.trim(), idea, started: Date.now(), saved: Date.now(), ans: {}, written: {} });
   };
   let loadMsg = $("startMsg");
   $("btnLoadStart").onclick = () => { loadMsg = $("startMsg"); $("fileLoad").click(); };
@@ -641,99 +524,7 @@ function initStudent() {
   };
 }
 
-/* ---------------- INSTRUCTOR ---------------- */
-let KEY = null, codeRows = [], gradeRows = [];
-
-function initInstructor() {
-  $("pageTitle").textContent = "Week 1 · Instructor";
-  $("pageSub").textContent = "Access codes, answer keys, and submission checks.";
-  $("instView").classList.remove("hidden");
-  const unlock = async () => {
-    const k = $("inKey").value;
-    const m = $("keyMsg");
-    if (k.length < 12) { m.className = "msg bad"; m.textContent = "Use a course key of at least 12 characters (a short phrase works well)."; return; }
-    m.className = "msg"; m.textContent = "Checking…";
-    const kc = await keyCheckValue(k);
-    if (CONFIG.KEY_CHECK && kc !== CONFIG.KEY_CHECK) { m.className = "msg bad"; m.textContent = "That key doesn't match this course."; return; }
-    KEY = k;
-    $("instTools").classList.remove("hidden");
-    m.className = "msg ok";
-    m.innerHTML = CONFIG.KEY_CHECK ? "Unlocked."
-      : `Unlocked. <b>One-time setup:</b> paste this key check value into <span class="mono">KEY_CHECK</span> at the top of the lab code so a mistyped key is caught next time: <span class="mono">${kc}</span>`;
-  };
-  $("btnKey").onclick = unlock;
-  $("inKey").addEventListener("keydown", e => { if (e.key === "Enter") unlock(); });
-
-  $("btnCodes").onclick = async () => {
-    const names = $("inRoster").value.split(/\r?\n/).map(s => s.trim().replace(/\s+/g, " ")).filter(Boolean);
-    codeRows = [];
-    for (const n of names) codeRows.push([n, await makeCode(KEY, n)]);
-    $("codesOut").innerHTML = codeRows.length ? `<table><tr><th>Name</th><th>Access code</th></tr>${codeRows.map(r => `<tr><td>${esc(r[0])}</td><td class="mono">${r[1]}</td></tr>`).join("")}</table>` : "";
-    $("btnCodesCsv").classList.toggle("hidden", !codeRows.length);
-  };
-  $("btnCodesCsv").onclick = () => downloadText(`access-codes-${CONFIG.TERM}.csv`, [["Name", "Access code"], ...codeRows].map(r => r.map(v => csvCell(v, true)).join(",")).join("\r\n"));
-
-  $("btnAnswerKey").onclick = async () => {
-    const name = $("inKeyName").value.trim();
-    if (!name) return;
-    const code = await makeCode(KEY, name);
-    const sc = await buildScenario(name, code);
-    const fmt = (id, v) => typeof v === "string" ? v : (["q5", "q6"].includes(id) ? num(v) : money(v));
-    $("answerKeyOut").innerHTML = `
-      <p><b>${esc(name)}</b> · code <span class="mono">${code}</span> · state <b>${esc(sc.state)}</b></p>
-      <table><tr><th>Item</th><th>Expected answer</th></tr>
-      ${Object.entries(sc.expected).map(([id, v]) => `<tr><td>${id.toUpperCase()}</td><td>${fmt(id, v)}</td></tr>`).join("")}
-      ${APA.map(q => `<tr><td>${q.id.toUpperCase()}</td><td>${esc(q.options[q.correct])}</td></tr>`).join("")}
-      </table>
-      <h3>Private details to look for in this student's paper</h3>
-      <p class="sub">${num(sc.affected)} potential customers · ${num(sc.hours)} hrs/week · ${money(sc.rate)}/hour · ${sc.save}% time saved · ${money(sc.price)}/month · ${sc.capture}% capture · ${money(sc.profit)} year-3 profit</p>`;
-  };
-
-  $("inSubs").onchange = async e => {
-    gradeRows = [];
-    const out = [];
-    for (const f of e.target.files) {
-      try {
-        const { state: st, intact } = await readHandIn(await f.text());
-        const expCode = await makeCode(KEY, st.name);
-        const codeOk = normCode(st.code) === expCode;
-        const sc = await buildScenario(st.name, st.code);
-        let correct = 0, first = 0, wrong = 0;
-        const detail = AUTO_IDS.map(id => {
-          const a = st.ans[id] || {};
-          const ok = a.val != null && isCorrect(sc, id, a.val);
-          if (ok) correct++;
-          if (ok && (a.wrong || []).length === 0) first++;
-          wrong += (a.wrong || []).length;
-          const apa = APA.find(x => x.id === id);
-          const shown = a.val == null ? "—" : (apa ? apa.options[Number(a.val)] : a.val);
-          return `<tr><td>${id.toUpperCase()}</td><td>${esc(shown)}</td><td class="${ok ? "ok" : "bad"}">${ok ? "✓" : "✗"}</td><td>${(a.wrong || []).length}</td></tr>`;
-        }).join("");
-        const pts = codeOk && intact ? Math.round(CONFIG.POINTS * correct / AUTO_IDS.length * 10) / 10 : 0;
-        const flags = [!codeOk && "code does not match name", !intact && "file was changed", st.term !== CONFIG.TERM && "different term"].filter(Boolean);
-        gradeRows.push([st.name, st.code, codeOk ? "yes" : "NO", intact ? "yes" : "NO", `${correct}/${AUTO_IDS.length}`, first, wrong, pts, flags.join("; ")]);
-        out.push(`<tr><td>${esc(st.name)}</td><td class="${codeOk ? "ok" : "bad"}">${codeOk ? "✓" : "✗"}</td><td class="${intact ? "ok" : "bad"}">${intact ? "✓" : "✗"}</td>
-          <td>${correct}/${AUTO_IDS.length}</td><td>${first}</td><td>${wrong}</td><td><b>${pts}</b></td></tr>
-          <tr><td colspan="7"><details><summary>Details${flags.length ? " · ⚠ " + esc(flags.join("; ")) : ""}</summary>
-          <p class="sub">Idea: ${esc(st.idea)} · state ${esc(sc.state)}</p>
-          <table><tr><th>Item</th><th>Answer</th><th>Correct</th><th>Wrong attempts</th></tr>${detail}</table>
-          ${WRITTEN.map(w => `<h3>${esc(w.label)}</h3><div class="written-out">${esc(st.written[w.id] || "(blank)")}</div>`).join("")}
-          </details></td></tr>`);
-      } catch (err) {
-        gradeRows.push([f.name, "", "", "", "", "", "", "", "could not read: " + err.message]);
-        out.push(`<tr><td colspan="7" class="bad">${esc(f.name)}: could not read (${esc(err.message)})</td></tr>`);
-      }
-    }
-    $("subsOut").innerHTML = `<table><tr><th>Student</th><th>Code OK</th><th>File intact</th><th>Correct</th><th>First try</th><th>Wrong attempts</th><th>Points /${CONFIG.POINTS}</th></tr>${out.join("")}</table>
-      <p class="sub" style="margin-top:8px">Points = ${CONFIG.POINTS} × checked answers correct ÷ ${AUTO_IDS.length}. Written answers (Part D) are not included; adjust as you see fit. A file whose code doesn't match the name, or that was changed, scores 0 until you review it.</p>`;
-    $("btnGradesCsv").classList.toggle("hidden", !gradeRows.length);
-  };
-  $("btnGradesCsv").onclick = () => downloadText(`week1-results-${CONFIG.TERM}.csv`,
-    [["Name", "Code", "Code matches name", "File intact", "Correct", "First try", "Wrong attempts", "Points", "Flags"], ...gradeRows]
-      .map(r => r.map(v => csvCell(v, true)).join(",")).join("\r\n"));
-}
-
-if (new URLSearchParams(location.search).has("instructor")) initInstructor(); else initStudent();
+initStudent();
 </script>
 </body>
 </html>
