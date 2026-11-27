@@ -327,7 +327,9 @@ const SRC_TYPES = {
 };
 // APA 7 shape: an author, then the year (or n.d.) in parentheses followed by a period, then a title.
 const apaShape = r => /^\s*[^()]{2,}?\(\s*(\d{4}[a-z]?|n\.d\.)(,[^)]*)?\)\.\s+\S.{8,}/.test(r || "");
-function sourceOK(s) { return !!(s && SRC_TYPES[s.type] && apaShape(s.ref) && SRC_TYPES[s.type].check(s.link || "")); }
+// The Nakamoto report is already recorded and has no link, so it doesn't count as an outside source.
+const isNakamoto = s => /nakamoto/i.test((s && s.ref) || "") || /NR\s*-\s*\d{4}\s*-\s*\d{5}/i.test((s && s.ref) || "");
+function sourceOK(s) { return !!(s && SRC_TYPES[s.type] && !isNakamoto(s) && apaShape(s.ref) && SRC_TYPES[s.type].check(s.link || "")); }
 </script>
 <script id="xlsx">
 function b64enc(str) { let s = ""; for (const x of enc.encode(str)) s += String.fromCharCode(x); return btoa(s); }
@@ -449,7 +451,7 @@ const SRC_ACKS = ["src1", "src2", "src3", "src4"], FIN_ACKS = ["fin1", "fin2", "
 
 /* ---------------- self-checks (yes/no at the end of each section) ---------------- */
 const CHECKQ = {
-  s1: { q: "Do you know where to find the syllabus, the AI guidelines, and the Academic Dishonesty Policy in Blackboard?", no: "They are in Blackboard under <b>Syllabus</b> or in the <b>Start Here</b> folder. Take a minute to find them, then come back." },
+  s1: { q: "Have you read the course syllabus, the University's <i>Student Guidelines for the Use of AI</i>, and the Academic Dishonesty Policy?", no: "They are in Blackboard under <b>Syllabus</b> or in the <b>Start Here</b> folder. Read all three, then come back and answer Yes. The rest of the lab opens after that." },
   s2: { q: "Could someone who knows nothing about your business understand the problem from your one sentence?", no: "Rewrite the sentence above so it says plainly what is broken or missing, and for whom." },
   s3: { q: "Can your problem be monetized well enough to build a business plan around it?", no: "That's what Week 1 is for: better to find out now. Go back and rethink your problem or your customer." },
   s4: { q: "Do you know how to cite this report and its figures in your Week 2 paper?", no: () => `Put the full reference in your reference list exactly as shown. In your writing, cite each figure with the authors, year, and page number, for example ${pcite(S, "affected")}. Your reference and figures are also saved in your Excel file.` },
@@ -609,7 +611,7 @@ function drawCheck(k, onYesExtra) {
   if (st.ans !== "yes") { body.innerHTML = ""; return; }
   if (!CHECKQ[k].sources) { body.innerHTML = ""; if (onYesExtra) onYesExtra(body); return; }
   if (!st.sources.length) st.sources.push({ type: "journal", ref: "", link: "" });
-  body.innerHTML = `<p class="sub">List the outside source(s) that support it, in addition to your Nakamoto Reports source. Write the full APA 7 reference and give its DOI or link. At least one is required.</p>` +
+  body.innerHTML = `<p class="sub">List at least one <b>real outside source</b> that supports it. Write the full APA 7 reference and give its DOI or link. <b>Don't list your Nakamoto report here:</b> it is already recorded in your file and needs no link.</p>` +
     st.sources.map((s, i) => `<div class="src">
       <label>Source ${i + 1} type</label>
       <select data-g="${k}" data-i="${i}" data-f="type">${Object.entries(SRC_TYPES).map(([t, d]) => `<option value="${t}"${s.type === t ? " selected" : ""}>${d.label}</option>`).join("")}</select>
@@ -632,7 +634,7 @@ function srcMsg(k, i) {
   if (!s.ref && !s.link) { m.textContent = ""; return; }
   if (sourceOK(s)) { m.className = "msg ok"; m.textContent = "✓ Source recorded"; return; }
   m.className = "msg bad";
-  m.textContent = !apaShape(s.ref) ? "Write the reference in APA 7 form: Author, A. A. (Year). Title…" : SRC_TYPES[s.type].msg;
+  m.textContent = isNakamoto(s) ? "Don't list the Nakamoto report here. It is already recorded in your file and has no link. List a real outside source instead." : !apaShape(s.ref) ? "Write the reference in APA 7 form: Author, A. A. (Year). Title…" : SRC_TYPES[s.type].msg;
 }
 
 /* ---------------- sections ---------------- */
@@ -731,7 +733,7 @@ const RENDER = {
     <tr><td>Typical price customers accept</td><td class="v">${money(S.price)}/month</td><td class="c">${pcite(S, "price")}</td></tr>
     <tr><td>Realistic first-year market capture</td><td class="v">${S.capture}%</td><td class="c">${pcite(S, "capture")}</td></tr>
   </table>
-  <div class="box lesson"><span class="tag">About this source</span><p><b>Nakamoto Reports is a fictional research firm created for this course.</b> Its report exists only in this lab, so you won't find it online; that's expected. Cite it in APA 7 exactly as shown, as a course case source. Every other source you use must be real and must lead to the exact source you cite.</p></div>
+  <div class="box lesson"><span class="tag">About this source</span><p><b>Nakamoto Reports is a fictional research firm created for this course.</b> Its report exists only in this lab, so you won't find it online; that's expected. Cite it in APA 7 exactly as shown, as a course case source. <b>Don't add a DOI or link to it:</b> APA 7 leaves the link off when a source isn't online, so the reference above is already complete. Every other source you use must be real and must lead to the exact source you cite.</p></div>
   <p class="sub">These figures are planning assumptions for your venture. Getting the math right with them doesn't prove you can win these customers; you will test these assumptions against real evidence as the course goes on.</p>
   <p class="sub">Your company will be incorporated in <b>${esc(S.state)}</b>. You will research ${esc(S.state)}'s real requirements in Discussion Forum #1.</p>
   ${checkHTML("s4")}`;
@@ -770,14 +772,15 @@ const RENDER = {
   el.innerHTML = head(6, "put a dollar figure on the problem.") + `
   <div class="box lesson"><span class="tag">Learn</span><p>Lenders and investors want to know how much a problem costs and how much value you create. <b>Time lost × value of that time</b> gives the cost per customer. Multiply by the number of customers for the size of the problem. The share of that cost your solution removes is the <b>value you create</b>; subtract your price to see the customer's <b>net benefit</b>.</p></div>
   <div class="box example"><span class="tag">Example</span><p>2 hours/week × $40/hour × 50 weeks = <b>$4,000</b> per customer per year. With 10,000 customers: <b>$40,000,000</b> a year. A solution that saves 50% creates <b>$2,000</b> of value per customer. At $100/month ($1,200/year), the net benefit is <b>$800</b>.</p></div>
-  <p class="sub">Now use your own numbers from Section 4.</p>
+  <div class="problem-recall"><b>Reminder:</b> your figures (hours lost, value of that time, potential customers, time saved, and price) are in the table in <b>Section 4</b>. Each question below also repeats the figure it needs.</div>
   ${NUMERIC.filter(q => q.sec === 6).map((q, i) => numericHTML(q, i === 0)).join("")}
   ${checkHTML("s6")}`;
   wireQuestions(el); wireCheck("s6");
 },
 7(el) {
   el.innerHTML = head(7, "turn your market into a first-year target.") + `
-  <div class="box lesson"><span class="tag">Learn</span><p>A <b>SMART</b> objective is Specific, Measurable, Achievable, Relevant, and Time-bound. "Grow fast" is not SMART. "Win 400 customers in Ohio by December 31, 2027" is. Recurring revenue shows what the target is worth: <b>MRR</b> (monthly recurring revenue) = customers × monthly price; <b>ARR</b> = MRR × 12.</p></div>
+  <div class="box lesson"><span class="tag">Learn</span><p>A <b>SMART</b> objective is Specific, Measurable, Achievable, Relevant, and Time-bound. "Grow fast" is not SMART. "Win 400 customers in Ohio by December 31, 2027" is. Recurring revenue shows what the target is worth. <b>MRR</b> (monthly recurring revenue) is what your paying customers bring in each month: customers × monthly price. <b>ARR</b> (annual recurring revenue) is the same revenue over a full year: MRR × 12.</p></div>
+  <div class="problem-recall"><b>Reminder:</b> your figures (potential customers, first-year capture, and price) are in the table in <b>Section 4</b>. Each question below also repeats the figure it needs.</div>
   <div class="box example"><span class="tag">Example</span><p>20,000 potential customers × 2% = <b>400</b> customers. 400 ÷ 12 = 33.3, so <b>34</b> new customers a month. 400 × $50 = <b>$20,000</b> MRR, or <b>$240,000</b> ARR.</p></div>
   ${NUMERIC.filter(q => q.sec === 7).map((q, i) => numericHTML(q, i === 0)).join("")}
   ${checkHTML("s7")}`;
