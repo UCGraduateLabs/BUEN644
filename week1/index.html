@@ -454,7 +454,7 @@ const CHECKQ = {
   s1: { q: "Have you read the course syllabus, the University's <i>Student Guidelines for the Use of AI</i>, and the Academic Dishonesty Policy?", no: "They are in Blackboard under <b>Syllabus</b> or in the <b>Start Here</b> folder. Read all three, then come back and answer Yes. The rest of the lab opens after that." },
   s2: { q: "Could someone who knows nothing about your business understand the problem from your one sentence?", no: "Rewrite the sentence above so it says plainly what is broken or missing, and for whom." },
   s3: { q: "Can your problem be monetized well enough to build a business plan around it?", no: "That's what Week 1 is for: better to find out now. Go back and rethink your problem or your customer." },
-  s4: { q: "Do you know how to cite this report and its figures in your Week 2 paper?", no: () => `Put the full reference in your reference list exactly as shown. In your writing, cite each figure with the authors, year, and page number, for example ${pcite(S, "affected")}. Your reference and figures are also saved in your Excel file.` },
+  s4: { q: "Do you know how to cite this report and its figures in your Week 2 paper?", no: () => `Put the full reference in your reference list exactly as shown. In your writing, cite each figure with the authors, year, and page number, for example ${pcite(S, "affected")}. Your reference is saved in your Excel file, but the figures and their page numbers are not. Write them down now, or come back to this section later with <b>Load my saved work</b>.` },
   g5: { q: "Is my problem statement convincing and supported by evidence?", no: "Go back and strengthen your notes above. Add evidence from real sources, then come back to this check.", sources: true },
   s6: { q: "Do these numbers make sense for your business? Would a customer see enough value to pay your price?", no: "Look again at Q4. If the net benefit is small or negative, note how you would change the price or the value you create. You will address it in your paper." },
   s7: { q: "Is your year-one target realistic for a new business with your resources?", no: "Note what would make the target more realistic: a smaller share, a longer timeline, or a narrower market. You will address it in your paper." },
@@ -589,6 +589,13 @@ function wireTexts(root) {
     const upd = () => { const w = words(t.value); $("cnt-" + k).textContent = w < MINWORDS ? `${w} words · write at least a sentence or two` : `${w} words ✓`; };
     upd();
     t.addEventListener("input", () => { state.written[k] = t.value; upd(); refresh(); });
+    // Record how the note was entered: characters typed, and words pasted or dropped in.
+    state.entry = state.entry || {};
+    const en = () => state.entry[k] || (state.entry[k] = { typed: 0, pastedWords: 0, pastes: 0 });
+    t.addEventListener("beforeinput", e => { if (e.inputType === "insertText" && e.data) en().typed += e.data.length; });
+    const pasted = txt => { const x = en(); x.pastedWords += words(txt); x.pastes++; x.at = Date.now(); };
+    t.addEventListener("paste", e => pasted((e.clipboardData && e.clipboardData.getData("text")) || ""));
+    t.addEventListener("drop", e => pasted((e.dataTransfer && e.dataTransfer.getData("text")) || ""));
   });
 }
 function ackHTML(keys) { return `<div class="ack">${keys.map(k => `<label><input type="checkbox" data-ack="${k}"> <span>${ACKS[k]}</span></label>`).join("")}</div>`; }
@@ -851,7 +858,7 @@ async function buildHandIn() {
     [B("What would need to change"), W(state.written.mfix || "")],
     [B("What customers do now"), W(state.written.custnow || "")], []
   ];
-  if (S) rows.push([B("Nakamoto Reports citation"), W(S.cite.refText)], [B("State"), S.state], []);
+  if (S) rows.push([B("Nakamoto Reports citation"), W(S.cite.refText)], [B("About this source"), W("Fictional course source created for BUEN 644. It is not online, so it has no DOI or link; APA 7 leaves the link off. Cite it exactly as shown.")], [B("State"), S.state], []);
   rows.push([B("Section"), B("Opened"), B("Completed"), B("Minutes"), B("Self-check")]);
   const secCheck = { 1: "s1", 2: "s2", 3: "s3", 4: "s4", 5: "g5", 6: "s6", 7: "s7", 8: "g8" };
   for (const s of SECTIONS) { const x = state.sec[s.n] || {}, g = state.gates[secCheck[s.n]]; rows.push([`${s.n}. ${s.title}`, t(x.open), t(x.done), mins(x.open, x.done), g ? (g.ans || "") : ""]); }
@@ -864,7 +871,11 @@ async function buildHandIn() {
   rows.push([], [B("Notes")]);
   const LABELS = { p1: "Primary and secondary problems", p2: "Short- and long-run ramifications", p3: "Quantitative and qualitative analysis", legal: "Legal structure: why" };
   for (const [k, l] of Object.entries(LABELS)) rows.push([B(l), W(state.written[k] || "")]);
-  rows.push([B("Legal structure chosen"), state.legalChoice || ""], [], [B("Sources"), B("Type"), B("Reference"), B("DOI / link")]);
+  rows.push([B("Legal structure chosen"), state.legalChoice || ""]);
+  rows.push([], [B("How notes were entered"), B("Words now"), B("Words pasted in"), B("Characters typed"), B("Times pasted")]);
+  const ENTRY = { custnow: "What customers do now", mfix: "What would need to change", ...LABELS };
+  for (const [k, l] of Object.entries(ENTRY)) { const x = (state.entry || {})[k] || {}; rows.push([l, words(state.written[k]), x.pastedWords || 0, x.typed || 0, x.pastes || 0]); }
+  rows.push([], [B("Sources"), B("Type"), B("Reference"), B("DOI / link")]);
   for (const [g, l] of [["g5", "Problem statement"], ["g8", "Legal structure"]]) {
     const x = state.gates[g] || { sources: [] };
     rows.push([`${l}: ${x.ans || "not answered"}`]);
